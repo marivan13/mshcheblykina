@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoManager", "PhotoManager\PhotoManager.csproj", "{154A7F84-84C7-4FA8-A057-70D8CE4F3E84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoManager.Tests", "PhotoManager.Tests\PhotoManager.Tests.csproj", "{863FC0FC-5556-419D-ADA7-E0F8F22195D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{154A7F84-84C7-4FA8-A057-70D8CE4F3E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154A7F84-84C7-4FA8-A057-70D8CE4F3E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154A7F84-84C7-4FA8-A057-70D8CE4F3E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154A7F84-84C7-4FA8-A057-70D8CE4F3E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{863FC0FC-5556-419D-ADA7-E0F8F22195D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863FC0FC-5556-419D-ADA7-E0F8F22195D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863FC0FC-5556-419D-ADA7-E0F8F22195D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863FC0FC-5556-419D-ADA7-E0F8F22195D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BCFA871D-9498-47B7-A887-802B3A61FD22}
+	EndGlobalSection
+EndGlobal

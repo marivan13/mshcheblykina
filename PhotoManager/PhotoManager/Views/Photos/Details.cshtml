@@ -1,0 +1,187 @@
+﻿@model PhotoManager.Models.Photo
+
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //ViewData["PhotoID"] = Model.ID;
+    ViewData["PhotoUrl"] = @Url.Content(Model.PhotoUrl);
+    ViewData["PhotoName"] = Model.PhotoName;
+}
+
+<!-- photo-->
+<div id="">
+    <h2>Photo @Html.DisplayFor(model => model.PhotoName)</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            @*<a href="#" data-toggle="modal" data-image="@Url.Content(Model.PhotoUrl)" data-target="#image-full">*@
+            <a href="@Url.Content(Model.PhotoUrl)" target="_blank">
+                <img class="img-thumbnail" id="@Model.ID" src="@Url.Content(Model.PhotoUrl)" style="height:400px">
+            </a>
+        </div>
+        <div class="col-md-4">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Location)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Location)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.CameraModel)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CameraModel)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Lens)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Lens)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Diaphragm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Diaphragm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ShutterSpeed)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ShutterSpeed)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ISO)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ISO)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CreatedDate)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Keywords)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Keywords)
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<hr>
+<div class="container" id="albumsList">
+    @Html.Partial("AlbumsViewList")
+</div>
+<hr>
+<p>
+    @Html.ActionLink("Back to Photos", "Index")
+</p>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            var photoId = @Model.ID;
+            var selectedAlbumsTemp = new Array();
+            $("div .list-group-item").click(function () {
+                $(this).toggleClass("list-group-item-info");
+                selectedAlbumsTemp.push(this.id);
+                console.log(selectedAlbumsTemp);
+
+            //  //  $("#selectedAlbums").val(selectedAlbums);
+            //  //  alert($("#selectedAlbums").val());
+            });
+
+
+
+            $("#updateAlbumsToPhoto").click(function (e) {
+                e.preventDefault();
+
+                console.log("btn click");
+                $.post('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp }, function (data) {
+                    $("#albumsList").html(data);
+                });
+             //   $("#testdiv").load('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp });
+
+             //     //  $("#testdiv").empty();
+             //     //  $("#testdiv").html(data);
+             ////   });
+             //      // alert(data);
+
+            });
+
+
+        });
+
+    </script>
+}
+
+
+
+@*@using (Html.BeginForm("AddPhotoToAlbum", "Photos"))
+    {
+        <form class="">
+            @Html.HiddenFor(model => model.ID)
+            <h4>Add photo to albums</h4>
+
+
+            <div class="form-group">
+                <div class="list-group col-md-8">
+                    @foreach (var album in ViewBag.AlbumsNotAssignedToPhoto)
+                    {
+                        <div class="list-group-item" id="@album.Value">
+                            @album.Text
+                        </div>
+                       @Html.CheckBox("newSelectedAlbums", false, htmlAttributes: new { @class = "" })<span> @album.Text </span>
+                    }
+                </div>
+            </div>
+            <div>
+                <input type="submit" value="Add Photo To Album" class="btn btn-default" />
+            </div>
+        </form>
+    }
+
+
+     @*<div class="">
+            @Html.ListBox("selectedAlbums", ViewBag.AlbumsNotAssignedToPhoto as MultiSelectList, new { @class = "list-group" })
+     </div>*@
+
+
+@*@Html.Partial("ModalPhotoView")*@
+
+@*<div id="image-full" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+             Modal content
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Photo @Model.PhotoName</h4>
+                </div>
+                <div class="modal-body">
+                    <img id="@Model.ID" class="img-responsive" src="@Url.Content(Model.PhotoUrl)" style="height:auto">
+                </div>
+            </div>
+
+        </div>
+    </div>*@

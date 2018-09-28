@@ -1,0 +1,44 @@
+﻿@model PhotoManager.ViewModel.PhotoUpdateViewModel
+
+@using (Html.BeginForm("AddPhotoToAlbum", "Photos"))
+{
+    @*@Html.Hidden("selectedAlbums")*@
+    @*@Html.HiddenFor(model => model.ID)*@
+    <h4>Add photo to albums</h4>
+    <div class="form-group">
+        <div class="list-group">
+            @foreach (var album in @Model.AlbumsNotAssignedToPhoto)
+            {
+                <input type="checkbox" id="selectedAlbums" value="@album.ID">
+                <div class="list-group-item form-control">
+                    @album.Title
+                </div>
+            }
+        </div>
+    </div>
+    <div>
+        <input type="submit" id="addPhotoToAlbum" value="Add Photo To Album" class="btn btn-default" />
+    </div>
+}
+@*<div class="row">
+        <div class="col-lg-6">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <input type="checkbox" aria-label="...">
+                </span>
+                <input type="text" class="form-control" aria-label="...">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <input type="checkbox" aria-label="...">
+                </span>
+                <input type="text" class="form-control" aria-label="...">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <input type="checkbox" aria-label="...">
+                </span>
+                <input type="text" class="form-control" aria-label="..." disabled>
+            </div>
+        </div>
+    </div>*@

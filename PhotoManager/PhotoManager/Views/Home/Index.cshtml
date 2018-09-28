@@ -1,0 +1,41 @@
+﻿@model IEnumerable<PhotoManager.Models.Album>
+@using PhotoManager.Models
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="row form-inline">
+    <div class="col-md-4">
+    @using (Html.BeginForm("Index","Home", FormMethod.Get))
+    {
+        @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
+        <input type="submit" value="Search" class="form-control btn btn-default"/>
+    }
+    </div>
+    <div class="col-lg-8 btn-group">
+
+        @Html.ActionLink("Landscape", "Index","Home", new { albumCategory = AlbumCategory.Landscape }, new { @class = "form-control btn btn-primary" })
+        @Html.ActionLink("Lovestory", "Index", "Home", new { albumCategory = AlbumCategory.LoveStory }, new { @class = "form-control btn btn-primary" })
+        @Html.ActionLink("Wedding", "Index", "Home", new { albumCategory = AlbumCategory.Wedding }, new { @class = "form-control btn btn-primary" })
+        @Html.ActionLink("Portrait", "Index", "Home", new { albumCategory = AlbumCategory.Portrait }, new { @class = "form-control btn btn-primary" })
+        @Html.ActionLink("All", "Index", "Home", null, new { @class = "form-control btn btn-primary" })
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div class="row" id="album-list" >
+        @foreach (var album in Model)
+        {
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+                    <a href="@Url.Action("Details", "Albums", new {id = album.ID})">
+                        <img class="img-responsive thumbnail" src="@Url.Content(album.Photos.ToList().First().PhotoUrl)" style="height:200px">
+                    </a>
+                @Html.DisplayFor(modelItem => album.Title)
+            </div>
+         }
+     </div>
+</div>
+
+
+
