@@ -291,8 +291,9 @@
     <Content Include="Views\Photos\AlbumsList.cshtml" />
     <Content Include="Views\Albums\AlbumPhotoCarousel.cshtml" />
     <Content Include="Views\Photos\ModalPhotoView.cshtml" />
-    <Content Include="Views\Photos\AlbumsViewList.cshtml" />
+    <Content Include="Views\Photos\AlbumsNotAssignedPartialView.cshtml" />
     <Content Include="Views\Albums\PhotoAssignedAlbumsView.cshtml" />
+    <Content Include="Views\Albums\ShowAlbum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -46,10 +46,20 @@ namespace PhotoManager.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            PhotoUploadViewModel photoViewModel = new PhotoUploadViewModel();
-            return View(photoViewModel);
+            SetPhotoInfo();
+            return View();
         }
 
+
+        private void SetPhotoInfo()
+        {
+            ViewBag.Cameras = new SelectList(db.Cameras, "CameraId", "CameraModel");
+            ViewBag.Lenses = new SelectList(db.Lenses, "LensId", "LensModel");
+            ViewBag.ISO = new SelectList(new string[] { "100", "200", "400" });
+            ViewBag.ShutterSpeed = new SelectList(new string[] { "1/100", "1/125", "1/200" });
+            ViewBag.Diaphragm = new SelectList(new string[] { "f1.2", "f1.4", "f1.8" });
+
+        }
        
 
         // POST: Photos/Create
@@ -80,15 +90,17 @@ namespace PhotoManager.Controllers
                 if (ModelState.IsValid)
                 {
                     var image = Bitmap.FromStream(photoViewModel.PhotoUpload.InputStream);
-                    
+
 
                     if (photoViewModel.PhotoUpload != null && photoViewModel.PhotoUpload.ContentLength > 0)
                     {
                         var fileName = Path.GetFileName(photoViewModel.PhotoUpload.FileName);
                         var savePath = Path.Combine(Server.MapPath("~/Images"), fileName);
-                        var photoUrl = string.Format("{0}/{1}","~/Images", fileName);
+                        var photoUrl = string.Format("{0}/{1}", "~/Images", fileName);
 
                         photoViewModel.PhotoUpload.SaveAs(savePath);
+
+                     //   var camera = db.Cameras.Find(photoViewModel.CameraId)
 
                         var photo = new Photo
                         {
@@ -96,10 +108,10 @@ namespace PhotoManager.Controllers
                             PhotoName = fileName,
                             ISO = photoViewModel.ISO,
                             ShutterSpeed = photoViewModel.ShutterSpeed,
-                            CameraModel = photoViewModel.CameraModel,
+                            CameraModel = db.Cameras.Find(photoViewModel.CameraId),
                             Location = photoViewModel.Location,
-                            Keywords = photoViewModel.Keywords,
-                            Lens = photoViewModel.Lens
+                            Keywords = new List<string> {photoViewModel.Keywords},
+                            LensModel = db.Lenses.Find(photoViewModel.LensId)
                         };
 
                         db.Photos.Add(photo);
@@ -124,6 +136,7 @@ namespace PhotoManager.Controllers
         // GET: Photos/Edit/5
         public ActionResult Edit(int id)
         {
+           
             if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -133,6 +146,8 @@ namespace PhotoManager.Controllers
             {
                 return HttpNotFound();
             }
+
+            SetPhotoInfo();
             PhotoUpdateViewModel photoUpdateViewModel = new PhotoUpdateViewModel
             {
                 PhotoId = photo.ID,
@@ -140,14 +155,13 @@ namespace PhotoManager.Controllers
                 PhotoUrl = photo.PhotoUrl,
                 Location = photo.Location,
                 ISO = photo.ISO,
-                Keywords = photo.Keywords,
-                Lens = photo.Lens,
+                LensId = photo.LensModel.LensId,
                 Albums = photo.Albums,
-                CameraModel = photo.CameraModel,
+                CameraId = photo.CameraModel.CameraId,
                 ShutterSpeed = photo.ShutterSpeed
                 //AlbumsNotAssignedToPhoto = GetAlbumsNotAssignedToPhototest(photo.ID)
             };
-            GetAlbumsAssignedToPhoto(id);
+            //GetAlbumsAssignedToPhoto(id);
             return View(photoUpdateViewModel);
         }
 
@@ -167,28 +181,28 @@ namespace PhotoManager.Controllers
                     try
                     {
 
-                        if (photoUpdateViewModel.AlbumsNotAssigned != null)
-                        {
-                            var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
-                            var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
-                            foreach (var album in db.Albums)
-                            {
-                                if (selectedAlbumsSet.Contains(album.ID))
-                                {
-                                    if (!photoAlbums.Contains(album.ID))
-                                    {
-                                        photoToUpdate.Albums.Add(album);
-                                    }
-                                }
-                                else
-                                {
-                                    if (!photoAlbums.Contains(album.ID))
-                                    {
+                        //if (photoUpdateViewModel.AlbumsNotAssigned != null)
+                        //{
+                        //    var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
+                        //    var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
+                        //    foreach (var album in db.Albums)
+                        //    {
+                        //        if (selectedAlbumsSet.Contains(album.ID))
+                        //        {
+                        //            if (!photoAlbums.Contains(album.ID))
+                        //            {
+                        //                photoToUpdate.Albums.Add(album);
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            if (!photoAlbums.Contains(album.ID))
+                        //            {
 
-                                    }
-                                }
-                            }
-                        }
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
                         db.SaveChanges();
                         return RedirectToAction("Index");
@@ -238,7 +252,6 @@ namespace PhotoManager.Controllers
         [HttpPost]
         public ActionResult AddPhotoToAlbum(int? id, string[] selectedAlbums)
         {
-            //var selectedAlbumsTemp = Request.Params["selectedAlbums"];
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -251,28 +264,15 @@ namespace PhotoManager.Controllers
 
                     if (selectedAlbums != null)
                     {
-                        var selectedAlbumsSet = new HashSet<string>(selectedAlbums);
-                        var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
-                        foreach (var album in db.Albums)
+
+                        foreach (var album in selectedAlbums)
                         {
-                            if (selectedAlbumsSet.Contains(album.ID.ToString()))
-                            {
-                                if (!photoAlbums.Contains(album.ID))
-                                {
-                                    photoToUpdate.Albums.Add(album);
-                                }
-                            }
-                            else
-                            {
-                                if (!photoAlbums.Contains(album.ID))
-                                {
-                                    photoToUpdate.Albums.Remove(album);
-                                }
-                            }
+                            var albumToAdd = db.Albums.Find(int.Parse(album));
+                                photoToUpdate.Albums.Add(albumToAdd);
                         }
                         db.SaveChanges();
                         GetAlbumsAssignedToPhoto(id);
-                        return PartialView("AlbumsViewList");
+                        return RedirectToAction("Details", new { id });
                     }
                 }
                 catch (Exception)
@@ -288,53 +288,53 @@ namespace PhotoManager.Controllers
         public ActionResult UpdatePhotoDetails(PhotoUpdateViewModel photoUpdateViewModel)
         {
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
 
-                var photoToUpdate = db.Photos.Find(photoUpdateViewModel.PhotoId);
-                if (TryUpdateModel(photoToUpdate))
-                {
-                    try
-                    {
+            //    var photoToUpdate = db.Photos.Find(photoUpdateViewModel.PhotoId);
+            //    if (TryUpdateModel(photoToUpdate))
+            //    {
+            //        try
+            //        {
 
-                        if (photoUpdateViewModel.AlbumsNotAssigned != null)
-                        {
-                            var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
-                            var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
-                            foreach (var album in db.Albums)
-                            {
-                                if (selectedAlbumsSet.Contains(album.ID))
-                                {
-                                    if (!photoAlbums.Contains(album.ID))
-                                    {
-                                        photoToUpdate.Albums.Add(album);
-                                    }
-                                }
-                                else
-                                {
-                                    if (!photoAlbums.Contains(album.ID))
-                                    {
+            //            if (photoUpdateViewModel.AlbumsNotAssigned != null)
+            //            {
+            //                var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
+            //                var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
+            //                foreach (var album in db.Albums)
+            //                {
+            //                    if (selectedAlbumsSet.Contains(album.ID))
+            //                    {
+            //                        if (!photoAlbums.Contains(album.ID))
+            //                        {
+            //                            photoToUpdate.Albums.Add(album);
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        if (!photoAlbums.Contains(album.ID))
+            //                        {
 
-                                    }
-                                }
-                            }
-                        }
+            //                        }
+            //                    }
+            //                }
+            //            }
 
-                        db.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                    catch (Exception)
-                    {
-                        ModelState.AddModelError("", "Unable to save");
-                    }
-                }
+            //            db.SaveChanges();
+            //            return RedirectToAction("Index");
+            //        }
+            //        catch (Exception)
+            //        {
+            //            ModelState.AddModelError("", "Unable to save");
+            //        }
+            //    }
 
                 // var albums = photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues;
                 // AddPhotoToAlbum(photoUpdateViewModel.PhotoId, photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues)
                 //    db.Entry(photo).State = EntityState.Modified;
                 //     db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            //    return RedirectToAction("Index");
+            //}
             return View(photoUpdateViewModel);
         }
 

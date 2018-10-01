@@ -14,14 +14,14 @@ namespace PhotoManager.ViewModel
         public string Location { get; set; }
 
         public string Keywords { get; set; }
-        public CameraModel CameraModel { get; set; }
-        public string Lens { get; set; }
+        public int CameraId{ get; set; }
+        public int LensId { get; set; }
 
-        public ISO ISO { get; set; } 
+        public string ISO { get; set; } 
 
-        public Diaphragm Diaphragm { get; set; }
+        public string Diaphragm { get; set; }
 
-        public ShutterSpeed ShutterSpeed { get; set; }
+        public string ShutterSpeed { get; set; }
 
         public HttpPostedFileBase PhotoUpload { get; set; }
 

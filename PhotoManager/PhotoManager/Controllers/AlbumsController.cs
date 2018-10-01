@@ -30,6 +30,12 @@ namespace PhotoManager.Controllers
             return View(albums.ToList());
         }
 
+        //public ActionResult Index(string albumTitle)
+        //{
+        //    Album album = db.Albums.Find(albumTitle);
+        //    return View(album);
+        //}
+
         // GET: Albums/Details/5
         public ActionResult Details(int? id)
         {
@@ -38,6 +44,17 @@ namespace PhotoManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Album album = db.Albums.Find(id);
+            if (album == null)
+            {
+                return HttpNotFound();
+            }
+            return View(album);
+        }
+
+        [Route("Albums/{albumTitle}")]
+        public ActionResult ShowAlbum(string albumTitle)
+        {
+            Album album = db.Albums.Where(a => a.Title == albumTitle).FirstOrDefault();
             if (album == null)
             {
                 return HttpNotFound();

@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-6" ">
+    <div class="col-lg-6">
         @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary" })
 
     </div>
@@ -45,8 +45,8 @@
                                 @Html.Label("EXIF")
                             </dt>
                             <dd>
-                                @Html.DisplayFor(modelItem => item.CameraModel)
-                                @Html.DisplayFor(modelItem => item.Lens)
+                                @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
+                                @Html.DisplayFor(modelItem => item.LensModel.LensModel)
                                 @Html.DisplayFor(modelItem => item.Diaphragm)
                                 @Html.DisplayFor(modelItem => item.ShutterSpeed)
                                 @Html.DisplayFor(modelItem => item.ISO)

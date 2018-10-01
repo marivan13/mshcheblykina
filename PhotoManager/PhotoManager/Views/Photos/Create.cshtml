@@ -18,6 +18,7 @@
         <div class="form-group">
             @Html.Label("Upload", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
+                @*<input type="file" name="photoUpload" class="btn btn-default form-control">*@
                 @Html.TextBoxFor(model => model.PhotoUpload, new { type = "file", @class = "btn btn-default form-control" })
             </div>
         </div>
@@ -30,25 +31,25 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CameraModel, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Camera", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.CameraModel, new { @class = "btn btn-default dropdown form-control" })
-                @Html.ValidationMessageFor(model => model.CameraModel, "", new { @class = "text-danger" })
+                @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList, new { @class = "btn btn-default dropdown form-control" })
+                @Html.ValidationMessageFor(model => model.CameraId, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Lens, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Lens", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Lens, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Lens, "", new { @class = "text-danger" })
+                @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, new { @class = "btn btn-default dropdown form-control" })
+                @Html.ValidationMessageFor(model => model.LensId, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Diaphragm, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Diaphragm, new { @class = "btn btn-default dropdown form-control" })
+                @Html.DropDownListFor(model => model.Diaphragm, ViewBag.Diaphragm as SelectList, new { @class = "btn btn-default dropdown form-control" })
                 @Html.ValidationMessageFor(model => model.Diaphragm, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -56,7 +57,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ShutterSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.ShutterSpeed, new { @class = "btn btn-default dropdown form-control" })
+                @Html.DropDownListFor(model => model.ShutterSpeed, ViewBag.ShutterSpeed as SelectList, new { @class = "btn btn-default dropdown form-control" })
                 @Html.ValidationMessageFor(model => model.ShutterSpeed, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -64,7 +65,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ISO, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.ISO, new { @class = "btn btn-default dropdown form-control" })
+                @Html.DropDownListFor(model => model.ISO, ViewBag.ISO as SelectList, new { @class = "btn btn-default dropdown form-control" })
                 @Html.ValidationMessageFor(model => model.ISO, "", new { @class = "text-danger" })
             </div>
         </div>

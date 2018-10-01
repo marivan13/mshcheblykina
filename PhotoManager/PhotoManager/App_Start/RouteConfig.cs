@@ -13,11 +13,19 @@ namespace PhotoManager
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapMvcAttributeRoutes();
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            //routes.MapRoute(
+            //    name: "PublicAlbum",
+            //    url: "{controller}/{albumTitle}",
+            //    defaults: new { controller = "Albums", action = "ShowAlbum"}
+            //);
         }
     }
 }

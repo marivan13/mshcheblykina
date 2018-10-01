@@ -18,7 +18,10 @@ namespace PhotoManager.DataAccess
         }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Photo> Photos { get; set; }
- 
+        public DbSet<Camera> Cameras { get; set; }
+        public DbSet<Lens> Lenses { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Album>()
@@ -39,6 +42,29 @@ namespace PhotoManager.DataAccess
     {
         protected override void Seed(PhotoManagerDBContext context)
         {
+            var cameraModels = new List<Camera>
+            {
+                new Camera { CameraModel = "Canon 6d" },
+                new Camera { CameraModel = "Canon 60d"},
+                new Camera { CameraModel = "Canon 70d"},
+                new Camera { CameraModel = "Canon 7d"}
+            };
+
+            cameraModels.ForEach(p => context.Cameras.AddOrUpdate(i => i.CameraModel, p));
+
+            var lensModels = new List<Lens>
+            {
+                new Lens { LensModel = "Canon 24-70" },
+                new Lens { LensModel = "Canon 135"},
+                new Lens { LensModel = "Canon 35"},
+                new Lens { LensModel = "Canon 16-24"}
+            };
+
+           
+
+            lensModels.ForEach(p => context.Lenses.AddOrUpdate(i => i.LensModel, p));
+
+            var keywords = new List<string> { "landscape", "lovestory", "portrait", "wedding" };
             var photos = new List<Photo>
                 {
                  new Photo
@@ -46,52 +72,52 @@ namespace PhotoManager.DataAccess
                         PhotoName = "IMG_123.jpeg",
                         PhotoUrl = "~/Images/IMG_123.jpeg",
                         UserID = 1,
-                        CameraModel = CameraModel.Canon,
+                        CameraModel = cameraModels[0],
                         Location = "Stambul",
-                        Diaphragm = Diaphragm.f1_8,
-                        ISO = ISO.ISO_200,
-                        Lens = "Canon 24-70",
-                        ShutterSpeed = ShutterSpeed.S1_200,
-                        Keywords = "landscape"
+                        Diaphragm = "f2.0",
+                        ISO = "100",
+                        LensModel = lensModels[0],
+                        ShutterSpeed = "1/125",
+                        Keywords = keywords.ToList()
                     },
                     new Photo
                     {
                         PhotoName = "IMG_124.jpeg",
                         UserID = 1,
                         PhotoUrl = "~/Images/IMG_124.jpeg",
-                        CameraModel = CameraModel.Nikon,
+                        CameraModel = cameraModels[1],
                         Location = "Stambul",
-                        Diaphragm = Diaphragm.f3_5,
-                        ISO = ISO.ISO_400,
-                        Lens = "Canon 85",
-                        ShutterSpeed = ShutterSpeed.S1_100,
-                        Keywords = "lovestory"
+                        Diaphragm = "f2.2",
+                        ISO = "200",
+                        LensModel = lensModels[1],
+                        ShutterSpeed = "1/125",
+                        Keywords = keywords.ToList()
                     },
                     new Photo
                     {
                         PhotoName = "IMG_125.jpeg",
                         PhotoUrl = "~/Images/IMG_123.jpeg",
                         UserID = 1,
-                        CameraModel = CameraModel.Canon,
+                        CameraModel = cameraModels[2],
                         Location = "Stambul",
-                        Diaphragm = Diaphragm.f1_8,
-                        ISO = ISO.ISO_200,
-                        Lens = "Canon 24-70",
-                        ShutterSpeed = ShutterSpeed.S1_200,
-                        Keywords = "portrait"
+                        Diaphragm = "f1.4",
+                        ISO = "400",
+                        LensModel = lensModels[2],
+                        ShutterSpeed = "1/125",
+                        Keywords = keywords.ToList()
                     },
                     new Photo
                     {
                         PhotoName = "IMG_126.jpeg",
                         UserID = 1,
                         PhotoUrl = "~/Images/IMG_124.jpeg",
-                        CameraModel = CameraModel.Nikon,
+                        CameraModel = cameraModels[3],
                         Location = "Stambul",
-                        Diaphragm = Diaphragm.f3_5,
-                        ISO = ISO.ISO_400,
-                        Lens = "Canon 85",
-                        ShutterSpeed = ShutterSpeed.S1_100,
-                        Keywords = "wedding"
+                        Diaphragm = "f2.2",
+                        ISO = "800",
+                        LensModel = lensModels[3],
+                        ShutterSpeed = "1/125",
+                        Keywords = keywords.ToList()
                     }
                 };
 

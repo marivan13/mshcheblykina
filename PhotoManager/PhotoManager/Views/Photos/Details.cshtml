@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    //ViewData["PhotoID"] = Model.ID;
+    ViewData["PhotoID"] = Model.ID;
     ViewData["PhotoUrl"] = @Url.Content(Model.PhotoUrl);
     ViewData["PhotoName"] = Model.PhotoName;
 }
@@ -30,19 +30,19 @@
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.CameraModel)
+                    @Html.DisplayNameFor(model => model.CameraModel.CameraModel)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.CameraModel)
+                    @Html.DisplayFor(model => model.CameraModel.CameraModel)
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.Lens)
+                    @Html.DisplayNameFor(model => model.LensModel.LensModel)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.Lens)
+                    @Html.DisplayFor(model => model.LensModel.LensModel)
                 </dd>
 
                 <dt>
@@ -88,9 +88,9 @@
     </div>
 </div>
 
-<hr>
+<hr/>
 <div class="container" id="albumsList">
-    @Html.Partial("AlbumsViewList")
+    @Html.Partial("AlbumsNotAssignedPartialView")
 </div>
 <hr>
 <p>
@@ -100,12 +100,12 @@
 @section scripts{
     <script type="text/javascript">
         $(function () {
-            var photoId = @Model.ID;
-            var selectedAlbumsTemp = new Array();
+            @*var photoId = @Model.ID;*@
+            //var selectedAlbumsTemp = new Array();
             $("div .list-group-item").click(function () {
                 $(this).toggleClass("list-group-item-info");
-                selectedAlbumsTemp.push(this.id);
-                console.log(selectedAlbumsTemp);
+                //selectedAlbumsTemp.push(this.id);
+                //console.log(selectedAlbumsTemp);
 
             //  //  $("#selectedAlbums").val(selectedAlbums);
             //  //  alert($("#selectedAlbums").val());
@@ -113,13 +113,13 @@
 
 
 
-            $("#updateAlbumsToPhoto").click(function (e) {
-                e.preventDefault();
+            //$("#updateAlbumsToPhoto").click(function (e) {
+            //    e.preventDefault();
 
-                console.log("btn click");
-                $.post('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp }, function (data) {
-                    $("#albumsList").html(data);
-                });
+            //    console.log("btn click");
+            //    $.post('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp }, function (data) {
+            //        $("#albumsList").html(data);
+            //    });
              //   $("#testdiv").load('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp });
 
              //     //  $("#testdiv").empty();
@@ -127,7 +127,7 @@
              ////   });
              //      // alert(data);
 
-            });
+            //});
 
 
         });
