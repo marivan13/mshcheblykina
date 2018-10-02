@@ -2,37 +2,41 @@
 @using PhotoManager.ViewModel
 
 @{
-    List<AlbumAssignedPhotosViewModel> albumsAssignedPhoto = ViewBag.AlbumsAssignedList;
+    List<AlbumAssignedPhotosViewModel> albumsToPhoto = ViewBag.AlbumsAssignedList;
+    List<AlbumAssignedPhotosViewModel> assignedAlbums = albumsToPhoto.Where(a => a.AlbumAssigned).ToList();
+    List<AlbumAssignedPhotosViewModel> notAssignedAlbums = albumsToPhoto.Where(a => !a.AlbumAssigned).ToList();
 }
 
 <div class="row">
     <div class="col-md-6 list-group form-group">
-        <h4>Albums with this photo</h4>
-        @foreach (var album in albumsAssignedPhoto)
+        @if (assignedAlbums.Count != 0)
         {
-            if (@album.AlbumAssigned)
+            <h4>Albums with this photo</h4>
+            foreach (var album in assignedAlbums)
             {
+
                 <div class="list-group-item form-control" id="@album.AlbumID">
                     @Html.ActionLink(" ", "ShowAlbum", "Albums", new { albumTitle = @album.AlbumTitle }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
-                    @*<span class="glyphicon glyphicon-th-large"></span>*@
                     @album.AlbumTitle
                 </div>
+
             }
         }
     </div>
 </div>
 
-
+@* Ajax method use here*@
 @using (Html.BeginForm("AddPhotoToAlbum", "Photos"))
 {
     @Html.AntiForgeryToken()
     <div class="row">
         @Html.Hidden("id", ViewData["PhotoID"])
         <div class="col-md-6 list-group form-group">
-            <h4>Add photo to albums</h4>
-            @foreach (var album in albumsAssignedPhoto)
+
+            @if (notAssignedAlbums.Count != 0)
             {
-                if (!@album.AlbumAssigned)
+                <h4>Add photo to albums</h4>
+                foreach (var album in notAssignedAlbums)
                 {
                     <div class="list-group-item form-control" id="@album.AlbumID">
                         <span class="glyphicon glyphicon-plus"></span>

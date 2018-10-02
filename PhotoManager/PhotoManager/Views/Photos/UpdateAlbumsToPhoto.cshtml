@@ -1,0 +1,42 @@
+﻿@using PhotoManager.ViewModel
+@{
+    ViewBag.Title = "Update albums for photo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<AlbumAssignedPhotosViewModel> albumsToPhoto = ViewBag.AlbumsAssignedList;
+    List<AlbumAssignedPhotosViewModel> assignedAlbums = albumsToPhoto.Where(a => a.AlbumAssigned).ToList();
+    List<AlbumAssignedPhotosViewModel> notAssignedAlbums = albumsToPhoto.Where(a => !a.AlbumAssigned).ToList();
+}
+
+<h2>Update albums for photo @ViewData["PhotoName"]</h2>
+<hr/>
+
+<div class="row">
+    @foreach (var album in notAssignedAlbums)
+    {
+        <div class="col-md-8 list-group">
+            <div class="list-group-item">
+                <span class="glyphicon glyphicon-plus"></span>
+                <input type="checkbox" name="selectedNotAssignedAlbums" value="@album.AlbumID" @(Html.Raw(album.AlbumAssigned ? "checked=\"checked\"" : "")) />
+                <img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto)" style="height:30px; width:auto">
+                @album.AlbumTitle
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    @foreach (var album in assignedAlbums)
+    {
+        <div class="col-md-8 list-group">
+            <div class="list-group-item">
+                <span class="glyphicon glyphicon-plus"></span>
+                <input type="checkbox" name="selectedAssignedAlbums" value="@album.AlbumID" @(Html.Raw(album.AlbumAssigned ? "checked=\"checked\"" : "")) />
+                <img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto)" style="height:30px; width:auto">
+                @album.AlbumTitle
+            </div>
+        </div>
+    }
+</div>
+
+
+<input type="button" value="Update Albums" class="btn btn-default">

@@ -3,98 +3,101 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ////ViewData["PhotoID"] = Model.PhotoId;
+    ViewData["PhotoID"] = Model.PhotoId;
     //ViewData["PhotoUrl"] = @Url.Content(Model.PhotoUrl);
-    //ViewData["PhotoName"] = Model.PhotoName;
+    ViewData["PhotoName"] = Model.PhotoName;
 }
 
 <div class="container">
-    <h4> Edit photo  @Html.DisplayFor(model => model.PhotoName)</h4>
+    <div class="row form-inline">
+        <h2> Edit photo  @Html.DisplayFor(model => model.PhotoName)</h2>
+        @Html.ActionLink("Manage albums for photo", "UpdateAlbumsToPhoto", "Photos", new {id = Model.PhotoId}, new { @class = "btn btn-primary" })
+    </div>
+        <hr>
+    
+        <div class="col-md-6">
+            @*<a href="#" data-toggle="modal" data-image="@Url.Content(Model.PhotoUrl)" data-target="#image-full">*@
+            <a href="@Url.Content(Model.PhotoUrl)" target="_blank">
+                <img class="img-thumbnail " src="@Url.Content(Model.PhotoUrl)" style="height:auto">
+            </a>
+        </div>
+        <div class="col-md-6">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true);
+
+
+                <div class="form-horizontal">
+                    @Html.HiddenFor(model => model.PhotoId)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Location, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Camera", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList, new { @class = "btn btn-default dropdown form-control" })
+                            @Html.ValidationMessageFor(model => model.CameraId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Lens", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, new { @class = "btn btn-default dropdown form-control" })
+                            @Html.ValidationMessageFor(model => model.LensId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Diaphragm, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.Diaphragm, null, new { @class = "btn btn-default dropdown form-control" })
+                            @Html.ValidationMessageFor(model => model.Diaphragm, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ShutterSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.ShutterSpeed, null, new { @class = "btn btn-default dropdown form-control" })
+                            @Html.ValidationMessageFor(model => model.ShutterSpeed, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ISO, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.ISO, null, new { @class = "btn btn-default dropdown form-control" })
+                            @Html.ValidationMessageFor(model => model.ISO, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
     <hr>
-    <div class="col-md-6">
-        @*<a href="#" data-toggle="modal" data-image="@Url.Content(Model.PhotoUrl)" data-target="#image-full">*@
-        <a href="@Url.Content(Model.PhotoUrl)" target="_blank">
-            <img class="img-thumbnail " src="@Url.Content(Model.PhotoUrl)" style="height:auto">
-        </a>
-    </div>
-    <div class="col-md-6">
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true);
-
-
-            <div class="form-horizontal">
-                @Html.HiddenFor(model => model.PhotoId)
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Location, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.Label("Camera", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList, new { @class = "btn btn-default dropdown form-control" })
-                        @Html.ValidationMessageFor(model => model.CameraId, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                @*<div class="form-group">
-                    @Html.LabelFor(model => model.l, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Lens, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Lens, "", new { @class = "text-danger" })
-                    </div>
-                </div>*@
-
-                @*<div class="form-group">
-                    @Html.LabelFor(model => model.Diaphragm, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.Diaphragm, null, new { @class = "btn btn-default dropdown form-control" })
-                        @Html.ValidationMessageFor(model => model.Diaphragm, "", new { @class = "text-danger" })
-                    </div>
-                </div>*@
-
-                @*<div class="form-group">
-                    @Html.LabelFor(model => model.ShutterSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EnumDropDownListFor(model => model.ShutterSpeed, new { @class = "btn btn-default dropdown form-control" })
-                        @Html.ValidationMessageFor(model => model.ShutterSpeed, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.ISO, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EnumDropDownListFor(model => model.ISO, new { @class = "btn btn-default dropdown form-control" })
-                        @Html.ValidationMessageFor(model => model.ISO, "", new { @class = "text-danger" })
-                    </div>
-                </div>*@
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Save" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
-        }
+    <div>
+        @Html.ActionLink("Back to List", "Index")
     </div>
 
-</div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
 
-@*@Html.Partial("AlbumsViewList")*@
-<hr>
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-
-    <script type="text/javascript">
+        <script type="text/javascript">
         $(function () {
             @*var photoId = @Model.PhotoId;
             var selectedAlbumsTemp = new Array();
@@ -128,5 +131,5 @@
 
         //});
 
-    </script>
-}
+        </script>
+    }

@@ -29,13 +29,6 @@ namespace PhotoManager.Controllers
             }
             return View(albums.ToList());
         }
-
-        //public ActionResult Index(string albumTitle)
-        //{
-        //    Album album = db.Albums.Find(albumTitle);
-        //    return View(album);
-        //}
-
         // GET: Albums/Details/5
         public ActionResult Details(int? id)
         {

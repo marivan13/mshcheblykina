@@ -30,3 +30,8 @@ textarea {
     display: flex;
     flex-wrap: wrap;
 }
+
+.img-small {
+    height: 50px;
+    width: auto;
+}

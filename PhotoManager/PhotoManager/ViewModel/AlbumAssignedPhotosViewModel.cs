@@ -9,6 +9,8 @@ namespace PhotoManager.ViewModel
     {
         public int AlbumID { get; set; }
         public string AlbumTitle { get; set; }
+
+        //public string AlbumPreviewPhoto { get; set; }
         public bool AlbumAssigned { get; set; }
     }
 }

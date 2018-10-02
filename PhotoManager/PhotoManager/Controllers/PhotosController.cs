@@ -19,8 +19,16 @@ namespace PhotoManager.Controllers
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
 
         // GET: Photos
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
+            SetPhotoInfo();
+            var photos = from m in db.Photos
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                photos = photos.Where(a => a.ISO.ToString().ToLower() == searchString);
+            }
             //add for  user
             return View(db.Photos.ToList());
         }
@@ -51,13 +59,13 @@ namespace PhotoManager.Controllers
         }
 
 
-        private void SetPhotoInfo()
+        private void SetPhotoInfo(string ISOItem = null, string ShutterSpeedItem = null, string DiaphragmItem = null)
         {
             ViewBag.Cameras = new SelectList(db.Cameras, "CameraId", "CameraModel");
             ViewBag.Lenses = new SelectList(db.Lenses, "LensId", "LensModel");
-            ViewBag.ISO = new SelectList(new string[] { "100", "200", "400" });
-            ViewBag.ShutterSpeed = new SelectList(new string[] { "1/100", "1/125", "1/200" });
-            ViewBag.Diaphragm = new SelectList(new string[] { "f1.2", "f1.4", "f1.8" });
+            ViewBag.ISO = new SelectList(new string[] { "100", "200", "400" }, ISOItem);
+            ViewBag.ShutterSpeed = new SelectList(new string[] { "1/100", "1/125", "1/200" }, ShutterSpeedItem);
+            ViewBag.Diaphragm = new SelectList(new string[] { "f1.2", "f1.4", "f1.8" }, DiaphragmItem);
 
         }
        
@@ -147,13 +155,14 @@ namespace PhotoManager.Controllers
                 return HttpNotFound();
             }
 
-            SetPhotoInfo();
+          
             PhotoUpdateViewModel photoUpdateViewModel = new PhotoUpdateViewModel
             {
                 PhotoId = photo.ID,
                 PhotoName = photo.PhotoName,
                 PhotoUrl = photo.PhotoUrl,
                 Location = photo.Location,
+                Diaphragm = photo.Diaphragm,
                 ISO = photo.ISO,
                 LensId = photo.LensModel.LensId,
                 Albums = photo.Albums,
@@ -161,6 +170,8 @@ namespace PhotoManager.Controllers
                 ShutterSpeed = photo.ShutterSpeed
                 //AlbumsNotAssignedToPhoto = GetAlbumsNotAssignedToPhototest(photo.ID)
             };
+
+            SetPhotoInfo(photoUpdateViewModel.ISO, photoUpdateViewModel.ShutterSpeed, photoUpdateViewModel.Diaphragm);
             //GetAlbumsAssignedToPhoto(id);
             return View(photoUpdateViewModel);
         }
@@ -180,6 +191,9 @@ namespace PhotoManager.Controllers
                 {
                     try
                     {
+
+                        photoToUpdate.CameraModel = db.Cameras.Find(photoUpdateViewModel.CameraId);
+                        photoToUpdate.LensModel = db.Lenses.Find(photoUpdateViewModel.LensId);
 
                         //if (photoUpdateViewModel.AlbumsNotAssigned != null)
                         //{
@@ -284,10 +298,11 @@ namespace PhotoManager.Controllers
             return View(photoToUpdate);
 
         }
-        [HttpPost]
-        public ActionResult UpdatePhotoDetails(PhotoUpdateViewModel photoUpdateViewModel)
-        {
 
+        [HttpGet]
+        public ActionResult UpdateAlbumsToPhoto(int? id)
+        {
+            GetAlbumsAssignedToPhoto(id);
             //if (ModelState.IsValid)
             //{
 
@@ -329,13 +344,13 @@ namespace PhotoManager.Controllers
             //        }
             //    }
 
-                // var albums = photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues;
-                // AddPhotoToAlbum(photoUpdateViewModel.PhotoId, photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues)
-                //    db.Entry(photo).State = EntityState.Modified;
-                //     db.SaveChanges();
+            // var albums = photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues;
+            // AddPhotoToAlbum(photoUpdateViewModel.PhotoId, photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues)
+            //    db.Entry(photo).State = EntityState.Modified;
+            //     db.SaveChanges();
             //    return RedirectToAction("Index");
             //}
-            return View(photoUpdateViewModel);
+            return View();
         }
 
         public ActionResult AlbumsList()
@@ -379,6 +394,7 @@ namespace PhotoManager.Controllers
                     AlbumID = album.ID,
                     AlbumTitle = album.Title,
                     AlbumAssigned = photoAlbums.Contains(album.ID)
+                  //  AlbumPreviewPhoto = album.Photos.FirstOrDefault().PhotoUrl
 
                 });
             }
