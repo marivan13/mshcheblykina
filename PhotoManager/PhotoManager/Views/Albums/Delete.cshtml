@@ -5,14 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
+<hr />
 <h3>Are you sure you want to delete album @Model.Title ?</h3>
 <div>
-    <h4>Album</h4>
     <hr />
     <dl class="dl-horizontal">
-       
+
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -38,12 +36,15 @@
         </dd>
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
         </div>
     }
+
+    <hr />
+    @Html.ActionLink("Back to List", "Index")
 </div>

@@ -44,16 +44,16 @@ namespace PhotoManager.Controllers
             return View(album);
         }
 
-        [Route("Albums/{albumTitle}")]
-        public ActionResult ShowAlbum(string albumTitle)
-        {
-            Album album = db.Albums.Where(a => a.Title == albumTitle).FirstOrDefault();
-            if (album == null)
-            {
-                return HttpNotFound();
-            }
-            return View(album);
-        }
+        //[Route("Albums/{albumTitle}")]
+        //public ActionResult ShowAlbum(string albumTitle)
+        //{
+        //    Album album = db.Albums.Where(a => a.Title == albumTitle).FirstOrDefault();
+        //    if (album == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(album);
+        //}
 
         // GET: Albums/Create
         public ActionResult Create()
@@ -91,6 +91,7 @@ namespace PhotoManager.Controllers
             return View(album);
         }
 
+        [HttpGet]
         // GET: Albums/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -201,9 +202,8 @@ namespace PhotoManager.Controllers
             ViewBag.PhotosAssignedList = photosAssignedViewModel;
 
         }
-
         [HttpPost]
-        public ActionResult UpdatePhotosInAlbum(int? id, string[] selectedPhotos)
+        public ActionResult UpdatePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
         {
             //var selectedAlbumsTemp = Request.Params["selectedAlbums"];
             if (id == null)
@@ -216,30 +216,53 @@ namespace PhotoManager.Controllers
                 try
                 {
 
-                    if (selectedPhotos != null)
+                    if (selectedAssignedPhotos != null || selectedNotAssignedPhotos != null)
                     {
-                        var selectedPhotosSet = new HashSet<string>(selectedPhotos);
-                        var photosInAlbum = new HashSet<int>(albumToUpdate.Photos.Select(a => a.ID));
-                        foreach (var photo in db.Photos)
+                        if (selectedNotAssignedPhotos != null)
                         {
-                            if (selectedPhotosSet.Contains(photo.ID.ToString()))
+
+                            foreach (var photo in selectedNotAssignedPhotos)
                             {
-                                if (!photosInAlbum.Contains(photo.ID))
-                                {
-                                    albumToUpdate.Photos.Add(photo);
-                                }
+                                var photoToAdd = db.Photos.Find(int.Parse(photo));
+                                albumToUpdate.Photos.Add(photoToAdd);
                             }
-                            else
+
+                        }
+                        if (selectedAssignedPhotos != null)
+                        {
+                            foreach (var photo in selectedAssignedPhotos)
                             {
-                                if (!photosInAlbum.Contains(photo.ID))
-                                {
-                                    albumToUpdate.Photos.Remove(photo);
-                                }
+                                var photoToAdd = db.Photos.Find(int.Parse(photo));
+                                albumToUpdate.Photos.Add(photoToAdd);
                             }
+
                         }
                         db.SaveChanges();
                         GetPhotosAssignedToAlbum(id);
-                        return PartialView("PhotoAssignedAlbumsView");
+                        return PartialView("_PhotoAssignedToAlbums");
+
+                        //var selectedPhotosSet = new HashSet<string>(selectedPhotos);
+                        //var photosInAlbum = new HashSet<int>(albumToUpdate.Photos.Select(a => a.ID));
+                        //foreach (var photo in db.Photos)
+                        //{
+                        //    if (selectedPhotosSet.Contains(photo.ID.ToString()))
+                        //    {
+                        //        if (!photosInAlbum.Contains(photo.ID))
+                        //        {
+                        //            albumToUpdate.Photos.Add(photo);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        if (!photosInAlbum.Contains(photo.ID))
+                        //        {
+                        //            albumToUpdate.Photos.Remove(photo);
+                        //        }
+                        //    }
+                        //}
+                        //db.SaveChanges();
+                        //GetPhotosAssignedToAlbum(id);
+                        //return PartialView("PhotoAssignedAlbumsView");
                     }
                 }
                 catch (Exception)

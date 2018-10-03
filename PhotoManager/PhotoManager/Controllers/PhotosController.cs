@@ -195,6 +195,7 @@ namespace PhotoManager.Controllers
                         photoToUpdate.CameraModel = db.Cameras.Find(photoUpdateViewModel.CameraId);
                         photoToUpdate.LensModel = db.Lenses.Find(photoUpdateViewModel.LensId);
 
+
                         //if (photoUpdateViewModel.AlbumsNotAssigned != null)
                         //{
                         //    var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
@@ -227,8 +228,6 @@ namespace PhotoManager.Controllers
                     }
                 }
 
-                // var albums = photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues;
-                // AddPhotoToAlbum(photoUpdateViewModel.PhotoId, photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues)
                 //    db.Entry(photo).State = EntityState.Modified;
                 //     db.SaveChanges();
                 return RedirectToAction("Index");
@@ -264,7 +263,7 @@ namespace PhotoManager.Controllers
 
 
         [HttpPost]
-        public ActionResult AddPhotoToAlbum(int? id, string[] selectedAlbums)
+        public ActionResult AddAlbumsToPhoto(int? id, string[] selectedAlbums)
         {
             if (id == null)
             {
@@ -286,7 +285,7 @@ namespace PhotoManager.Controllers
                         }
                         db.SaveChanges();
                         GetAlbumsAssignedToPhoto(id);
-                        return RedirectToAction("Details", new { id });
+                        return PartialView("_AlbumsAssignedToPhoto");
                     }
                 }
                 catch (Exception)
@@ -303,54 +302,56 @@ namespace PhotoManager.Controllers
         public ActionResult UpdateAlbumsToPhoto(int? id)
         {
             GetAlbumsAssignedToPhoto(id);
-            //if (ModelState.IsValid)
-            //{
-
-            //    var photoToUpdate = db.Photos.Find(photoUpdateViewModel.PhotoId);
-            //    if (TryUpdateModel(photoToUpdate))
-            //    {
-            //        try
-            //        {
-
-            //            if (photoUpdateViewModel.AlbumsNotAssigned != null)
-            //            {
-            //                var selectedAlbumsSet = new HashSet<int>(photoUpdateViewModel.AlbumsNotAssigned);
-            //                var photoAlbums = new HashSet<int>(photoToUpdate.Albums.Select(a => a.ID));
-            //                foreach (var album in db.Albums)
-            //                {
-            //                    if (selectedAlbumsSet.Contains(album.ID))
-            //                    {
-            //                        if (!photoAlbums.Contains(album.ID))
-            //                        {
-            //                            photoToUpdate.Albums.Add(album);
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        if (!photoAlbums.Contains(album.ID))
-            //                        {
-
-            //                        }
-            //                    }
-            //                }
-            //            }
-
-            //            db.SaveChanges();
-            //            return RedirectToAction("Index");
-            //        }
-            //        catch (Exception)
-            //        {
-            //            ModelState.AddModelError("", "Unable to save");
-            //        }
-            //    }
-
-            // var albums = photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues;
-            // AddPhotoToAlbum(photoUpdateViewModel.PhotoId, photoUpdateViewModel.AlbumsNotAssignedToPhoto.SelectedValues)
-            //    db.Entry(photo).State = EntityState.Modified;
-            //     db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
             return View();
+        }
+
+
+        public ActionResult UpdateAlbumsToPhoto(int? id, string[] selectedNotAssignedAlbums, string[] selectedAssignedAlbums)
+        {
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var photoToUpdate = db.Photos.Find(id);
+            if (TryUpdateModel(photoToUpdate))
+            {
+                try
+                {
+                    if (selectedNotAssignedAlbums != null || selectedAssignedAlbums != null)
+                    {
+
+                        if (selectedNotAssignedAlbums != null)
+                        {
+
+                            foreach (var album in selectedNotAssignedAlbums)
+                            {
+                                var albumToAdd = db.Albums.Find(int.Parse(album));
+                                photoToUpdate.Albums.Add(albumToAdd);
+                            }
+
+                        }
+                        if (selectedAssignedAlbums != null)
+                        {
+                            foreach (var album in selectedAssignedAlbums)
+                            {
+                                var albumToAdd = db.Albums.Find(int.Parse(album));
+                                photoToUpdate.Albums.Remove(albumToAdd);
+                            }
+
+                        }
+                        db.SaveChanges();
+                        GetAlbumsAssignedToPhoto(id);
+                        return RedirectToAction("Edit", new { id });
+                    }
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("", "Unable to save");
+                }
+            }
+
+            return View(photoToUpdate);
         }
 
         public ActionResult AlbumsList()
@@ -362,23 +363,7 @@ namespace PhotoManager.Controllers
         {
             return PartialView("AlbumsViewList");
         }
-        //private MultiSelectList GetAlbumsNotAssignedToPhoto(int? id)
-        //{
-        //    Photo photo = db.Photos.Find(id);
-        //    var photoAlbums = photo.Albums.Select(a => a.ID);
-        //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
-        //    return new MultiSelectList(albumsNotAssignedToPhoto, "ID", "Title");
 
-        //}
-
-        //private IEnumerable<Album> GetAlbumsNotAssignedToPhototest(int? id)
-        //{
-        //    Photo photo = db.Photos.Find(id);
-        //    var photoAlbums = photo.Albums.Select(a => a.ID);
-        //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
-        //    return albumsNotAssignedToPhoto;
-
-        //}
 
         //Get list of albums and check if album assigned to current photo
         private void GetAlbumsAssignedToPhoto(int? id)
@@ -386,16 +371,14 @@ namespace PhotoManager.Controllers
             Photo photo = db.Photos.Find(id);
             var photoAlbums = photo.Albums.Select(a => a.ID);
             var allAlbums = db.Albums;
-            var albumsAssignedViewModel = new List<AlbumAssignedPhotosViewModel>();
+            var albumsAssignedViewModel = new List<AlbumsAssignedToPhotoViewModel>();
             foreach (var album in allAlbums)
             {
-                albumsAssignedViewModel.Add(new AlbumAssignedPhotosViewModel
+                albumsAssignedViewModel.Add(new AlbumsAssignedToPhotoViewModel
                 {
                     AlbumID = album.ID,
                     AlbumTitle = album.Title,
                     AlbumAssigned = photoAlbums.Contains(album.ID)
-                  //  AlbumPreviewPhoto = album.Photos.FirstOrDefault().PhotoUrl
-
                 });
             }
 
@@ -413,4 +396,22 @@ namespace PhotoManager.Controllers
             base.Dispose(disposing);
         }
     }
+
+    //private MultiSelectList GetAlbumsNotAssignedToPhoto(int? id)
+    //{
+    //    Photo photo = db.Photos.Find(id);
+    //    var photoAlbums = photo.Albums.Select(a => a.ID);
+    //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
+    //    return new MultiSelectList(albumsNotAssignedToPhoto, "ID", "Title");
+
+    //}
+
+    //private IEnumerable<Album> GetAlbumsNotAssignedToPhototest(int? id)
+    //{
+    //    Photo photo = db.Photos.Find(id);
+    //    var photoAlbums = photo.Albums.Select(a => a.ID);
+    //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
+    //    return albumsNotAssignedToPhoto;
+
+    //}
 }

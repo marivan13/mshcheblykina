@@ -7,6 +7,7 @@ using PhotoManager.Models;
 using PhotoManager.ViewModel;
 using PhotoManager.DataAccess;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace PhotoManager.Controllers
 {
@@ -33,6 +34,21 @@ namespace PhotoManager.Controllers
             return View(albums.ToList());
 
         }
+
+        //public async Task<ActionResult> SortByAlbumCategory(AlbumCategory? albumCategory)
+        //{
+        //    var albums = await db.Albums.AsyWhere(a => a.AlbumType.Equals(AlbumType.PublicAlbum);
+        //    //.Where(a => a.AlbumType.Equals(AlbumType.PublicAlbum));
+        //    //where m.AlbumType == AlbumType.PublicAlbum
+        //    //select m;
+
+        //    if (albumCategory != null)
+        //    {
+        //        albums = albums.Where(a => a.AlbumCategory == albumCategory);
+        //    }
+
+        //    return PartialView("_PublicAlbumsList", albums);
+        //}
 
         public ActionResult About()
         {

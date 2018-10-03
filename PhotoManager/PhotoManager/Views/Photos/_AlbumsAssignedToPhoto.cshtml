@@ -1,0 +1,55 @@
+﻿
+@using PhotoManager.ViewModel
+
+@{
+    List<AlbumsAssignedToPhotoViewModel> albumsAssignedList = ViewBag.AlbumsAssignedList;
+    List<AlbumsAssignedToPhotoViewModel> albumsAssigned = albumsAssignedList.Where(a => a.AlbumAssigned).ToList();
+    List<AlbumsAssignedToPhotoViewModel> albumsNotAssigned = albumsAssignedList.Where(a => !a.AlbumAssigned).ToList();
+}
+
+<div class="row">
+    <div class="col-md-6 list-group form-group">
+        @if (albumsAssigned.Count != 0)
+        {
+            <h4>Albums with this photo</h4>
+            foreach (var album in albumsAssigned)
+            {
+
+                <div class="list-group-item form-control" id="@album.AlbumID">
+                    @Html.ActionLink(" ", "ShowAlbum", "Albums", new { albumTitle = @album.AlbumTitle }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
+                    @album.AlbumTitle
+                </div>
+
+            }
+        }
+    </div>
+</div>
+
+@* Ajax method use here*@
+@using (Ajax.BeginForm("AddAlbumsToPhoto", new AjaxOptions { UpdateTargetId = "albumsList" }))
+{
+    if (albumsNotAssigned.Count != 0)
+    {
+        <div class="row">
+            @Html.Hidden("id", ViewData["PhotoID"])
+            <div class="col-md-6 list-group form-group">
+
+
+                <h4>Add photo to albums</h4>
+                @foreach (var album in albumsNotAssigned)
+                {
+                    <div class="list-group-item form-control" id="@album.AlbumID">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <input type="checkbox" name="selectedAlbums" value="@album.AlbumID" @(Html.Raw(album.AlbumAssigned ? "checked=\"checked\"" : "")) />
+                        @album.AlbumTitle
+                    </div>
+                 }
+            </div>
+        </div>
+        <input type="submit" id="updateAlbumsToPhoto" value="Update albums" class="btn btn-primary" />
+        }
+ }
+
+
+
+

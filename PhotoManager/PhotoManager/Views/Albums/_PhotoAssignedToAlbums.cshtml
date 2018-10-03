@@ -1,0 +1,57 @@
+﻿@using PhotoManager.ViewModel
+
+@{
+    List<PhotoAssignedAlbumsViewModel> photosAssignedList = ViewBag.PhotosAssignedList;
+    List<PhotoAssignedAlbumsViewModel> photosAssigned = photosAssignedList.Where(p => p.PhotoAssigned).ToList();
+    List<PhotoAssignedAlbumsViewModel> photosNotAssigned = photosAssignedList.Where(p => !p.PhotoAssigned).ToList();
+}
+
+@using (Ajax.BeginForm("UpdatePhotosToAlbum", new AjaxOptions { UpdateTargetId = "photosList" }))
+{
+    @Html.Hidden("id", ViewData["albumID"])
+    <div class="row">
+        <h4>Add photos to album</h4>
+        @foreach (var photo in photosNotAssigned)
+        {
+            <div class="col-md-3 thumbnail" id="@photo.PhotoID">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <input type="checkbox" name="selectedNotAssignedPhotos" value="@photo.PhotoID" />
+                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:100px; width:auto">
+            </div>
+        }
+    </div>
+    <hr>
+
+
+    <div class="row">
+        <h4>Remove photos from album</h4>
+        @foreach (var photo in photosAssigned)
+        {
+            <div class="col-md-3 thumbnail" id="@photo.PhotoID">
+                <span class="glyphicon glyphicon-remove"></span>
+                <input type="checkbox" name="selectedAssignedPhotos" value="@photo.PhotoID" />
+                <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:100px">
+            </div>
+        }
+    </div>
+    <hr />
+
+    <input type="submit" value="Update photos" class="btn btn-primary" />
+    <br>
+}
+
+
+@*@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $(".thumbnail").click(function (e) {
+                    e.preventDefault();
+                console.log(e);
+                console.log("btn click");
+            });
+
+    });
+
+    </script>
+
+}*@

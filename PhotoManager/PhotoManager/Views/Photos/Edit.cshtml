@@ -10,8 +10,12 @@
 
 <div class="container">
     <div class="row form-inline">
-        <h2> Edit photo  @Html.DisplayFor(model => model.PhotoName)</h2>
-        @Html.ActionLink("Manage albums for photo", "UpdateAlbumsToPhoto", "Photos", new {id = Model.PhotoId}, new { @class = "btn btn-primary" })
+        <div>
+             <h2> Edit photo  @Html.DisplayFor(model => model.PhotoName)</h2>
+        </div>
+        <div>
+             @Html.ActionLink("Manage albums for photo", "UpdateAlbumsToPhoto", "Photos", new {id = Model.PhotoId}, new { @class = "btn btn-primary" })
+        </div>
     </div>
         <hr>
     
@@ -87,6 +91,24 @@
             }
         </div>
 
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 list-group form-group">
+            @if (Model.Albums.Count != 0)
+            {
+                <h4>Albums with this photo</h4>
+                foreach (var album in Model.Albums)
+                {
+
+                    <div class="list-group-item form-control" id="@album.ID">
+                        @Html.ActionLink(" ", "ShowAlbum", "Albums", new { albumTitle = @album.Title }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
+                        @album.Title
+                    </div>
+
+                }
+            }
+        </div>
     </div>
 
     <hr>

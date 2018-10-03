@@ -235,6 +235,8 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -291,10 +293,11 @@
     <Content Include="Views\Photos\AlbumsList.cshtml" />
     <Content Include="Views\Albums\AlbumPhotoCarousel.cshtml" />
     <Content Include="Views\Photos\ModalPhotoView.cshtml" />
-    <Content Include="Views\Photos\AlbumsNotAssignedPartialView.cshtml" />
-    <Content Include="Views\Albums\PhotoAssignedAlbumsView.cshtml" />
+    <Content Include="Views\Photos\_AlbumsAssignedToPhoto.cshtml" />
+    <Content Include="Views\Albums\_PhotoAssignedToAlbums.cshtml" />
     <Content Include="Views\Albums\ShowAlbum.cshtml" />
     <Content Include="Views\Photos\UpdateAlbumsToPhoto.cshtml" />
+    <Content Include="Views\Home\_PublicAlbumsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

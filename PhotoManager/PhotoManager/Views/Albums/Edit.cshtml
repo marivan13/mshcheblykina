@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["albumID"] = Model.ID;
 }
 
 <h2>Edit album @Model.Title</h2>
@@ -11,7 +12,7 @@
     <div class="row">
         <div class="col-lg-6 col-md-6" id="photosList">
 
-            @Html.Partial("PhotoAssignedAlbumsView")
+            @Html.Partial("_PhotoAssignedToAlbums")
         </div>
         <div class="col-lg-6 col-md-6">
             @using (Html.BeginForm())
@@ -68,9 +69,19 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryajax")
     <script type="text/javascript">
         $(function () {
-            var albumId = @Model.ID;
+
+            $(".thumbnail").click(function (e) {
+                e.preventDefault();
+                console.log(e);
+                console.log("btn click");
+                var checkbox = $(this).children('input[type="checkbox"]');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            });
+
+            @*var albumId = @Model.ID;
             var selectedPhotosTemp = new Array();
             $("div .bg-white").click(function () {
                 console.log(this);
@@ -92,7 +103,7 @@
                 $.post('/Albums/UpdatePhotosInAlbum', { id: albumId, selectedPhotos: selectedPhotosTemp }, function (data) {
                     console.log(data);
                     $("#photosList").html(data);
-                });
+                });*@
              //   $("#testdiv").load('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp });
 
              //     //  $("#testdiv").empty();
@@ -100,7 +111,7 @@
              ////   });
              //      // alert(data);
 
-            });
+           // });
 
 
         });
