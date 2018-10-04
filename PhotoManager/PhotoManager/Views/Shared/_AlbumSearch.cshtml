@@ -1,0 +1,8 @@
+﻿
+@*add jquery ajax to clean field and show tooltip when start searching*@
+
+@using (Ajax.BeginForm("AlbumSearch", new AjaxOptions { UpdateTargetId = "albumList" }))
+{
+    @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
+    <input type="submit" value="Search" class="form-control btn btn-default" />
+}

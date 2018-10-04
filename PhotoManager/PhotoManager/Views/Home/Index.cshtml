@@ -7,23 +7,19 @@
 
 <div class="row form-inline">
     <div class="col-md-4">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Get))
-        {
-            @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
-            <input type="submit" value="Search" class="form-control btn btn-default" />
-        }
+        @Html.Partial("_AlbumSearch")
     </div>
     <div class="col-lg-8 btn-group">
 
-        @Ajax.ActionLink("Landscape", "SortByAlbumCategory", new { albumCategory = AlbumCategory.Landscape }, new AjaxOptions { UpdateTargetId = "albumPublicList" }, new { @class = "form-control btn btn-primary" })
-        @*@Html.ActionLink("Lovestory", "Index", "Home", new { albumCategory = AlbumCategory.LoveStory }, new { @class = "form-control btn btn-primary" })
-        @Html.ActionLink("Wedding", "Index", "Home", new { albumCategory = AlbumCategory.Wedding }, new { @class = "form-control btn btn-primary" })
-        @Html.ActionLink("Portrait", "Index", "Home", new { albumCategory = AlbumCategory.Portrait }, new { @class = "form-control btn btn-primary" })
-        @Html.ActionLink("All", "Index", "Home", null, new { @class = "form-control btn btn-primary" })*@
+        @Ajax.ActionLink("Landscape", "SortByAlbumCategory", new { albumCategory = AlbumCategory.Landscape }, new AjaxOptions { UpdateTargetId = "albumList" }, new { @class = "form-control btn btn-primary" })
+        @Ajax.ActionLink("Lovestory", "SortByAlbumCategory", new { albumCategory = AlbumCategory.LoveStory }, new AjaxOptions { UpdateTargetId = "albumList" }, new { @class = "form-control btn btn-primary" })
+        @Ajax.ActionLink("Wedding", "SortByAlbumCategory", new { albumCategory = AlbumCategory.Wedding }, new AjaxOptions { UpdateTargetId = "albumList" }, new { @class = "form-control btn btn-primary" })
+        @Ajax.ActionLink("Portrait", "SortByAlbumCategory", new { albumCategory = AlbumCategory.Portrait }, new AjaxOptions { UpdateTargetId = "albumList" }, new { @class = "form-control btn btn-primary" })
+        @Ajax.ActionLink("All", "SortByAlbumCategory",null, new AjaxOptions { UpdateTargetId = "albumPublicList" }, new { @class = "form-control btn btn-primary" })
     </div>
 </div>
 <hr>
-<div class="container" id="albumPublicList">
+<div class="container" id="albumList">
     @Html.Partial("_PublicAlbumsList")
 </div>
 

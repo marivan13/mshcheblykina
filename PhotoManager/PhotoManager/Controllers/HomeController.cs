@@ -15,25 +15,29 @@ namespace PhotoManager.Controllers
     {
         PhotoManagerDBContext db = new PhotoManagerDBContext();
 
-        public ActionResult Index(AlbumCategory? albumCategory, string searchString)
+        public ActionResult Index()
         {
 
             var albums = from m in db.Albums
                          where m.AlbumType == AlbumType.PublicAlbum
                          select m;
 
-            if (albumCategory != null)
-            {
-                albums = albums.Where(a => a.AlbumCategory == albumCategory);
-            }
+            return View(albums.ToList());
 
+        }
+
+        public ActionResult AlbumSearch(string searchString)
+        {
+
+            var albums = from m in db.Albums
+                         select m;
             if (!String.IsNullOrEmpty(searchString))
             {
                 albums = albums.Where(a => a.AlbumCategory.ToString().ToLower() == searchString);
             }
-            return View(albums.ToList());
-
+            return PartialView("_PublicAlbumsList", albums.ToList());
         }
+
 
         public ActionResult SortByAlbumCategory(AlbumCategory? albumCategory)
         {
@@ -47,20 +51,6 @@ namespace PhotoManager.Controllers
             }
 
             return PartialView("_PublicAlbumsList", albums.ToList());
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
 
     }

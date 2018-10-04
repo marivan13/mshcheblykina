@@ -9,11 +9,12 @@
 
 <div class="row form-inline">
     <div class="col-md-4">
-        @using (Html.BeginForm("Index", "Albums", FormMethod.Get))
+        @Html.Partial("_AlbumSearch")
+        @*@using (Html.BeginForm("Index", "Albums", FormMethod.Get))
         {
             @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
             <input type="submit" value="Search" class="form-control btn btn-default" />
-        }
+        }*@
     </div>
     <div class="col-md-4">
         @Html.ActionLink("Add new album", "Create", null, new { @class = "btn btn-primary" })
@@ -22,8 +23,9 @@
 
 <hr>
 
-<div class="jumbotron">
-<div class="row display-flex">
+<div class="jumbotron" id="albumList">
+    @Html.Partial("_AlbumsList")
+@*<div class="row display-flex">
     @foreach (var album in Model)
     {
      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -48,6 +50,6 @@
         </div>
      </div>
     }
- </div>
+ </div>*@
 </div>
 

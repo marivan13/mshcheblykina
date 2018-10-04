@@ -44,13 +44,8 @@ namespace PhotoManager.Controllers
             return View(album);
         }
 
-        //Albums/Create
-        //Albums/Edit
-
-        //album/Landscape1
-
-        //[Route("Albums/{title}")]
-        //[HttpGet]
+        //public link to album
+        [Route("Album/{title}")]
         public ActionResult ShowAlbum(string title)
         {
             Album album = db.Albums.Where(a => a.Title == title).FirstOrDefault();
@@ -58,7 +53,7 @@ namespace PhotoManager.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             return View(album);
         }
 
@@ -73,7 +68,7 @@ namespace PhotoManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,UserID,Title,AlbumType,Description,DataCreation")] Album album)
+        public ActionResult Create([Bind(Include = "ID,UserID,Title,AlbumType,Description")] Album album)
         {
             try
             {
@@ -120,8 +115,12 @@ namespace PhotoManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserID,Title,AlbumType,Description,DataCreation")] Album album)
+        public ActionResult Edit([Bind(Include = "Title,AlbumType,Description")] Album album)
         {
+            if (db.Albums.Select(a => a.Title).Contains(album.Title))
+            {
+                ModelState.AddModelError("Title", album.Title + " already exists in your albums");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(album).State = EntityState.Modified;
@@ -187,6 +186,17 @@ namespace PhotoManager.Controllers
             return PartialView("PhotoAssignedAlbumsView");
         }
 
+        public ActionResult AlbumSearch(string searchString)
+        {
+
+            var albums = from m in db.Albums
+                         select m;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                albums = albums.Where(a => a.AlbumCategory.ToString().ToLower() == searchString);
+            }
+            return PartialView("_AlbumsList", albums.ToList());
+        }
 
         private void GetPhotosAssignedToAlbum(int? id)
         {
@@ -247,29 +257,6 @@ namespace PhotoManager.Controllers
                         db.SaveChanges();
                         GetPhotosAssignedToAlbum(id);
                         return PartialView("_PhotoAssignedToAlbums");
-
-                        //var selectedPhotosSet = new HashSet<string>(selectedPhotos);
-                        //var photosInAlbum = new HashSet<int>(albumToUpdate.Photos.Select(a => a.ID));
-                        //foreach (var photo in db.Photos)
-                        //{
-                        //    if (selectedPhotosSet.Contains(photo.ID.ToString()))
-                        //    {
-                        //        if (!photosInAlbum.Contains(photo.ID))
-                        //        {
-                        //            albumToUpdate.Photos.Add(photo);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        if (!photosInAlbum.Contains(photo.ID))
-                        //        {
-                        //            albumToUpdate.Photos.Remove(photo);
-                        //        }
-                        //    }
-                        //}
-                        //db.SaveChanges();
-                        //GetPhotosAssignedToAlbum(id);
-                        //return PartialView("PhotoAssignedAlbumsView");
                     }
                 }
                 catch (Exception)
