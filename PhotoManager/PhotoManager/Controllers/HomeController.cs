@@ -35,20 +35,19 @@ namespace PhotoManager.Controllers
 
         }
 
-        //public async Task<ActionResult> SortByAlbumCategory(AlbumCategory? albumCategory)
-        //{
-        //    var albums = await db.Albums.AsyWhere(a => a.AlbumType.Equals(AlbumType.PublicAlbum);
-        //    //.Where(a => a.AlbumType.Equals(AlbumType.PublicAlbum));
-        //    //where m.AlbumType == AlbumType.PublicAlbum
-        //    //select m;
+        public ActionResult SortByAlbumCategory(AlbumCategory? albumCategory)
+        {
+            var albums = from m in db.Albums
+            where m.AlbumType == AlbumType.PublicAlbum
+            select m;
 
-        //    if (albumCategory != null)
-        //    {
-        //        albums = albums.Where(a => a.AlbumCategory == albumCategory);
-        //    }
+            if (albumCategory != null)
+            {
+                albums = albums.Where(a => a.AlbumCategory == albumCategory);
+            }
 
-        //    return PartialView("_PublicAlbumsList", albums);
-        //}
+            return PartialView("_PublicAlbumsList", albums.ToList());
+        }
 
         public ActionResult About()
         {
@@ -63,5 +62,6 @@ namespace PhotoManager.Controllers
 
             return View();
         }
+
     }
 }

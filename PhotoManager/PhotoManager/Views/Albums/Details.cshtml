@@ -1,4 +1,5 @@
 ﻿@model PhotoManager.Models.Album
+@using PhotoManager.Helpers.Url
 
 @{
     ViewBag.Title = Model.Title;
@@ -10,7 +11,11 @@
     </div>
 
     <div class="col-md-6">
-        @Html.ActionLink("Get album link", "ShowAlbum", "Albums", new { albumTitle = Model.Title}, new { @class = "btn btn-primary", target = "_blank" })
+        @*<a href="@Url.PublicAlbumUrl(Model.Title)" title="">Get album link</a>*@
+
+        @Html.ActionLink("Get album link", "Albums", "Home", new { title = Model.Title }, new { @class = "btn btn-primary", target = "_blank" })
+        <a href="@Url.RouteUrl("PublicAlbum", new { title = Model.Title})">link2</a>
+
         @Html.ActionLink("Edit album", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
     </div>
  

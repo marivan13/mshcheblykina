@@ -44,16 +44,23 @@ namespace PhotoManager.Controllers
             return View(album);
         }
 
-        //[Route("Albums/{albumTitle}")]
-        //public ActionResult ShowAlbum(string albumTitle)
-        //{
-        //    Album album = db.Albums.Where(a => a.Title == albumTitle).FirstOrDefault();
-        //    if (album == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(album);
-        //}
+        //Albums/Create
+        //Albums/Edit
+
+        //album/Landscape1
+
+        //[Route("Albums/{title}")]
+        //[HttpGet]
+        public ActionResult ShowAlbum(string title)
+        {
+            Album album = db.Albums.Where(a => a.Title == title).FirstOrDefault();
+            if (album == null)
+            {
+                return HttpNotFound();
+            }
+            
+            return View(album);
+        }
 
         // GET: Albums/Create
         public ActionResult Create()

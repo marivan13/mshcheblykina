@@ -15,17 +15,21 @@ namespace PhotoManager
 
             routes.MapMvcAttributeRoutes();
 
+   
+
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+                    name: "Default",
+                    url: "{controller}/{action}/{id}",
+                    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                );
 
             //routes.MapRoute(
-            //    name: "PublicAlbum",
-            //    url: "{controller}/{albumTitle}",
-            //    defaults: new { controller = "Albums", action = "ShowAlbum"}
+            //     name: "PublicAlbum",
+            //     url: "Albums/{title}",
+            //     defaults: new { controller = "Albums", action = "ShowAlbum" },
             //);
+
+
         }
     }
 }
