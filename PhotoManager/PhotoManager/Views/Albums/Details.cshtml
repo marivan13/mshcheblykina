@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = Model.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 <div class="row ">
     <div class="col-md-6">
@@ -24,14 +25,15 @@
         <div class="row" id="album-photos">
             @if (Model.Photos.Count != 0)
             {
+                var dataSlideNum = 0;
                 foreach (var photo in Model.Photos)
                 {
-                    @*<a href="#" data-toggle="modal" data-image="@Url.Content(photo.PhotoUrl)" data-target="#photo-gallary">*@
-                    <a href="@Url.Action("ShowPhotoInAlbum", "Albums", new { photos = Model.Photos})" data-target="#photo-carousel" data-toggle="modal">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
-                            <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px">
-                        </div>
-                    </a>
+                    @*<a href="@Url.Action("ShowPhotoInAlbum", "Albums", new { photos = Model.Photos})" data-target="#photo-carousel" data-toggle="modal">*@
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
+                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal" data-slide-to="@dataSlideNum">
+                </div>
+                    @*</a>*@
                 }
             }
 
@@ -84,70 +86,21 @@
 @Html.ActionLink("Back to Albums", "Index")
 
 <!---modal dialog for view photos in carousel-->
-<div id="photo-carousel" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        </div>
+<div class="" id="photosModalShow">
+    @Html.Partial("_AlbumPhotoCarousel")
     </div>
-</div>
-
 @section scripts{
-    @Scripts.Render("~/bundles/bootstrap")
     <script type="text/javascript">
         $(function () {
 
-            $(".carousel").carousel();
+            $("#modal-carousel").carousel('pause');
 
-            $("#modal-carousel").on('slid.bs.carousel', function () {
-                console.log("click on btn");
-                var photosInCarousel = $(".item");
-                console.log(photosInCarousel);
-                var active = $(".item.active");
-                console.log(active);
-
+            $(".row .img-responsive").click(function () {
+                $("[id^=modal_]").removeClass("active");
+                $("#modal_" + this.id).addClass("active");
             });
 
-            //$("#photo-carousel").modal("show");
         });
 
-                            //$("#modal-carousel").carousel({ interval: false });
-
-                            //$("#modal-carousel").on("slid.bs.carousel", function () {
-                            //    alert("click on prev");
-                            //});
-
-
-
-                    /* activate the carousel */
-                    //$("#modal-carousel").carousel({interval:false});
-
-                    ///* change modal title when slide changes */
-                    //$("#modal-carousel").on("slid.bs.carousel",       function () {
-                    //$(".modal-title")
-                    //.html($(this)
-                    //.find(".active img")
-                    //.attr("title"));
-                    //});
-
-                    ///* when clicking a thumbnail */
-                    //$(".row ").click(function(){
-                    //var content = $(".carousel-inner");
-                    //var title = $(".modal-title");
-
-                    //content.empty();
-                    //title.empty();
-
-                    //var id = this.id;
-                    //var repo = $("#album-photos .img-responsive");
-                    //var repoCopy = repo.filter("#" + id).clone();
-                    //var active = repoCopy.first();
-
-                    //active.addClass("active");
-                    //title.html(active.find("img").attr("title"));
-                    //content.append(repoCopy);
-
-                    //// show the modal
-                    //$("#modal-gallery").modal("show");
-                    //});
     </script>
 }

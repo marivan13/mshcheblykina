@@ -7,41 +7,20 @@
 
 
 <h2>My photos</h2>
-<div class="row form-inline">
-    @using (Html.BeginForm("Index", "Photos", FormMethod.Get))
-    {
+        <div class="row">
+            <div class="col-md-4">
+                @Html.Partial("_AdvancedPhotoSearch")
 
-        @*<div class="col-lg-6">
-                <div class="input-group">
-                    @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search by ... <span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a href="#">Keywords</a></li>
-                            <li> Camera Model @Html.DropDownList("Camera", ViewBag.Cameras as SelectList, new { @class = "btn btn-default dropdown form-control" })Camera Model</li>
-                            <li><a href="#">Lens Model</a></li>
-                            <li><a href="#">ISO</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>*@
-            <div class="col-lg-6">
-                    @Html.TextBox("searchString", ViewBag.SearchString as string, new { @class = "form-control", placeholder = "Search for..." })
-                    <input type="submit" value="Search" class="form-control btn btn-default" />
-                    @* to do Advanced search add partial view and ajax search*@
-                    @Html.ActionLink("Advanced search", "Index", null, new { @class = "btn btn-default" })
             </div>
-
-            }
-            <div class="col-lg-6">
+            <div class="col-md-4">
                 @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary" })
                 @Html.ActionLink("Manage albums", "Index", "Albums", null, new { @class = "btn btn-primary" })
             </div>
-    </div>
+        </div>
 
-        <hr>
+        <hr/>
 
-        <div class="jumbotron">
+        <div class="jumbotron" id="photoList">
             <div class="row">
                 @foreach (var item in Model)
                 {
@@ -74,14 +53,18 @@
                                     <dd>
                                         @Html.DisplayFor(modelItem => item.Location)
                                     </dd>
+                                    <dt>
+                                        @Html.DisplayNameFor(model => model.Keywords)
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(modelItem => item.Keywords)
+                                    </dd>
                                 </dl>
                                 <div>
                                     @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
                                     @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
                                     <i class='glyphicon glyphicon-plus'></i>
                                     @Html.ActionLink("Add to Album", "Details", new { id = item.ID }, new { @class = "btn btn-sm btn-default" })
-                                    @*<i class='glyphicon glyphicon-plus'></i>
-                                        <button type="button" id="addPhoto" class="btn btn-sm btn-default" data-toggle="popover" title="Add Photo to Album" data-content="">Add to album</button>*@
                                 </div>
                             </div>
                         </div>
@@ -93,35 +76,15 @@
         @section scripts{
             <script type="text/javascript">
                 $(function () {
-                    //    $('[data-toggle="popover"]').popover();
-                    //    $("#addPhoto").attr("data-content", getData()).popover();
+                    $('#advancedSearchType').change(function () {
+                        $(".search-type").hide();
+                        $('#' + $(this).val()).show();
+                    });
 
-                    //    function getData() {
-                    //        return "Here will be some ajax magic";
-                    //    }
-                    //});
+
+                });
 
             </script>
         }
 
-        @*<script src='@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")' type="text/javascript"></script>
-            <script>
-                $(document).ready(function () {
 
-                    $.ajaxSetup({ cache: false });
-
-                    $(".viewDialog").onclick(function (e) {
-                        e.preventDefault();
-                        alert("test");
-                        $("<div></div>")
-                            .addClass("dialog")
-                            .appendTo("body")
-                            .dialog({
-                                title: $(this).attr("data-dialog-title"),
-                                 close: function () { $(this).remove() },
-                                modal: true
-                            })
-                            .load(this.href);
-                    });
-                });
-            </script>*@

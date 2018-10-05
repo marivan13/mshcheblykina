@@ -1,0 +1,33 @@
+﻿@model PhotoManager.Models.Album
+
+<div id="photo-carousel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@Model.Title</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modal-carousel" class="carousel slide" data-ride="carousel">
+
+                    <div class="carousel-inner">
+                        @foreach (var photo in Model.Photos)
+                        {
+
+                                <div class="item" id="modal_@photo.ID">
+                                    <img src="@Url.Content(photo.PhotoUrl)" class="img-responsive" style="height:400px">
+                                    <div class="carousel-caption">
+                                        @*<h5>@photo.PhotoName</h5>*@
+                                    </div>
+                                </div>
+                         
+                        }
+                        <a class="carousel-control left" href="#modal-carousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                        <a class="carousel-control right" href="#modal-carousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+                    </div>
+             </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

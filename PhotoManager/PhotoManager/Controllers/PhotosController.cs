@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace PhotoManager.Controllers
             {
                 photos = photos.Where(a => a.ISO.ToString().ToLower() == searchString);
             }
+
             //add for  user
             return View(db.Photos.ToList());
         }
@@ -108,8 +110,6 @@ namespace PhotoManager.Controllers
 
                         photoViewModel.PhotoUpload.SaveAs(savePath);
 
-                     //   var camera = db.Cameras.Find(photoViewModel.CameraId)
-
                         var photo = new Photo
                         {
                             PhotoUrl = photoUrl,
@@ -118,7 +118,7 @@ namespace PhotoManager.Controllers
                             ShutterSpeed = photoViewModel.ShutterSpeed,
                             CameraModel = db.Cameras.Find(photoViewModel.CameraId),
                             Location = photoViewModel.Location,
-                            Keywords = new List<string> {photoViewModel.Keywords},
+                            Keywords = photoViewModel.Keywords,
                             LensModel = db.Lenses.Find(photoViewModel.LensId)
                         };
 
@@ -385,7 +385,22 @@ namespace PhotoManager.Controllers
             ViewBag.AlbumsAssignedList = albumsAssignedViewModel;
 
         }
-
+        [HttpPost]
+        public ActionResult PhotoAdvancedSearch(string keywords)
+        {
+            try
+            {
+                var searchString = new SqlParameter("@Search", "lovestory");
+                List<Photo> result = db.Photos.SqlQuery("SP_AdvancedTypePhotoSearch @Search", searchString).ToList();
+                return PartialView("_PhotosList", result);
+            }
+            catch(Exception exception)
+            {
+                
+                //logger
+            }
+            return View();
+        }
 
         protected override void Dispose(bool disposing)
         {

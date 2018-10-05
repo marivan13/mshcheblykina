@@ -35,3 +35,14 @@ textarea {
     height: 50px;
     width: auto;
 }
+
+.item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.carousel {
+    position: absolute; 
+}
+
+

@@ -11,6 +11,7 @@ namespace PhotoManager
 {
     public partial class Startup
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {

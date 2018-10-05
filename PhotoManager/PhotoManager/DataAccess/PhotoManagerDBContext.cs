@@ -78,7 +78,7 @@ namespace PhotoManager.DataAccess
                         ISO = "100",
                         LensModel = lensModels[0],
                         ShutterSpeed = "1/125",
-                        Keywords = keywords.ToList()
+                        Keywords = "#landscape"
                     },
                     new Photo
                     {
@@ -91,7 +91,7 @@ namespace PhotoManager.DataAccess
                         ISO = "200",
                         LensModel = lensModels[1],
                         ShutterSpeed = "1/125",
-                        Keywords = keywords.ToList()
+                        Keywords = "#lovestory"
                     },
                     new Photo
                     {
@@ -104,7 +104,7 @@ namespace PhotoManager.DataAccess
                         ISO = "400",
                         LensModel = lensModels[2],
                         ShutterSpeed = "1/125",
-                        Keywords = keywords.ToList()
+                        Keywords = "#portrait"
                     },
                     new Photo
                     {
@@ -117,7 +117,7 @@ namespace PhotoManager.DataAccess
                         ISO = "800",
                         LensModel = lensModels[3],
                         ShutterSpeed = "1/125",
-                        Keywords = keywords.ToList()
+                        Keywords = "#portrait #lovestory"
                     }
                 };
 
@@ -127,7 +127,7 @@ namespace PhotoManager.DataAccess
                 {
                     new Album {
                     Title = "Landscape1",
-                    Description = "Landscape1Description",
+                    Description = "Landscape1 Description",
                     UserID = 1,
                     AlbumType = AlbumType.PublicAlbum,
                     AlbumCategory = AlbumCategory.Landscape,
@@ -137,7 +137,7 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Landscape2",
-                        Description = "Landscape1Description",
+                        Description = "Landscape2 Description",
                         UserID = 1,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Landscape,
@@ -146,7 +146,7 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Lovestory1",
-                        Description = "Landscape1Description",
+                        Description = "Lovestory1 Description",
                         UserID = 1,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
@@ -155,7 +155,7 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Lovestory2",
-                        Description = "Landscape1Description",
+                        Description = "Lovestory2 Description",
                         UserID = 1,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
@@ -164,7 +164,7 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Portrait1",
-                        Description = "Landscape1Description",
+                        Description = "Portrait1 Description",
                         UserID = 1,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
@@ -173,7 +173,7 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Portrait2",
-                        Description = "Landscape1Description",
+                        Description = "Portrait2 Description",
                         UserID = 1,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
@@ -182,18 +182,18 @@ namespace PhotoManager.DataAccess
                     new Album
                     {
                         Title = "Wedding1",
-                        Description = "Landscape1Description",
+                        Description = "Wedding1 Description",
                         UserID = 1,
-                        AlbumType = AlbumType.PublicAlbum,
+                        AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
                         Photos = photos.ToList()
                     },
                     new Album
                     {
                         Title = "Wedding2",
-                        Description = "Landscape1Description",
+                        Description = "Wedding2 Description",
                         UserID = 1,
-                        AlbumType = AlbumType.PublicAlbum,
+                        AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
                         Photos = photos.ToList()
                     }

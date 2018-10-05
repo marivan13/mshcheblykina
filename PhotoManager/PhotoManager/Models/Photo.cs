@@ -27,7 +27,9 @@ namespace PhotoManager.Models
         [StringLength(160, MinimumLength = 5)]
         public string Location { get; set; } 
 
-        public List<string> Keywords { get; set; }
+        public string Keywords { get; set; }
+
+        public int PhotoLikes { get; set; }
         [Display(Name = "Camera")]
         public virtual Camera CameraModel { get; set; }
         [Display(Name = "Lens")]
