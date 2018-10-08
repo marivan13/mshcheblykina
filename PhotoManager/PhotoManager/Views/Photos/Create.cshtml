@@ -18,7 +18,6 @@
         <div class="form-group">
             @Html.Label("Upload", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @*<input type="file" name="photoUpload" class="btn btn-default form-control">*@
                 @Html.TextBoxFor(model => model.PhotoUpload, new { type = "file", @class = "btn btn-default form-control" })
             </div>
         </div>

@@ -1,55 +1,47 @@
 ﻿@*@model PhotoManager.Models.Photo*@
 
-
-@using (Ajax.BeginForm("PhotoAdvancedSearch", new AjaxOptions { UpdateTargetId = "photoList" }))
-{
-    @Html.AntiForgeryToken()
-    <div class="input-group" id="advancedSearch">
-        <input type="text" class="form-control" name="keywords" placeholder="Search" />
-        <div class="input-group-btn">
-            <div class="btn-group" role="group">
-                <div class="dropdown dropdown-lg">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label for="filter">Search by</label>
-                                <select class="btn btn-default dropdown form-control" id="advancedSearchType">
-                                    <option value="all" selected>All</option>
-                                    <option value="camera">Camera</option>
-                                    <option value="lens">Lens</option>
-                                    <option value="iso">ISO</option>
-                                    <option value="diapragm">Diaphragm</option>
-                                    <option value="shutterspeed">ShutterSpeed</option>
-                                    <option value="keywords">Keywords</option>
-                                </select>
-                            </div>
-                            <div class="form-group search-type" id="camera">
-                                <label for="contain">Camera</label>
-                                @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList, new { @class = "btn btn-default dropdown form-control" })
-                            </div>
-                            <div class="form-group search-type" id="lens">
-                                <label for="contain">Lens</label>
-                                @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, new { @class = "btn btn-default dropdown form-control" })
-                            </div>
-                            <div class="form-group search-type" id="iso">
-                                <label for="contain">ISO</label>
-                                @Html.DropDownList("ISO", ViewBag.ISO as SelectList, new { @class = "btn btn-default dropdown form-control" })
-                            </div>
-                            <div class="form-group search-type" id="diapragm">
-                                <label for="contain">Diaphragm</label>
-                                @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, new { @class = "btn btn-default dropdown form-control" })
-                            </div>
-                            <div class="form-group search-type" id="keywords">
-                                <label for="contain">Keywords</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                            <button type="submit" class="btn btn-primary form-control"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                        </form>
+@{ 
+    
+}
+    @using (Ajax.BeginForm("PhotoAdvancedSearch", new AjaxOptions { UpdateTargetId = "photoList" }))
+    {
+        <div class="container">
+            <div class="row" id="search">
+                    <div class="form-group form-inline col-md-6">
+                        <input class="form-control" type="text" name="searchPhotos" id="searchPhotos" placeholder="Search" />
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="button" id="advancedSearchBtn" class="btn btn-primary">Advanced Search</button>
                     </div>
-                </div>
-                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+            </div>
+            
+            <div class="row" id="advancedSearch" style="display:none">
+                <form>
+                    <div class="form-group col-sm-3 col-xs-6" id="cameraFilter">
+                        <label for="contain">Camera</label>
+                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList,"All", new { @class = "btn btn-default dropdown form-control filter" })
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-6" id="lensFilter">
+                        <label for="contain">Lens</label>
+                        @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-6">
+                        <label for="contain">ISO</label>
+                        @Html.DropDownList("ISO", ViewBag.ISO as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-6">
+                            <label for="contain">Diaphragm</label>
+                            @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-6">
+                            <label for="contain">Shutter Speed</label>
+                            @Html.DropDownList("ShutterSpeed", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                     </div>
+
+                    <div class="form-group col-sm-3 col-xs-6">
+                        <label for="contain">Keywords</label>
+                        <input class="form-control" type="text" placeholder="Keywords" name="keywords" id="keywords" />
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-}
+    }

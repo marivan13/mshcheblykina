@@ -28,6 +28,9 @@ namespace PhotoManager
                       "~/Content/PhotoManagerStyle.css"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryajax").Include(
                        "~/Scripts/jquery.unobtrusive-ajax.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/pmscript").Include(
+                       "~/Scripts/pmscripts/photo-manager.js"));
         }
     }
 }

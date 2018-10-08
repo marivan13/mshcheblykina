@@ -386,21 +386,54 @@ namespace PhotoManager.Controllers
 
         }
         [HttpPost]
-        public ActionResult PhotoAdvancedSearch(string keywords)
+        public ActionResult PhotoAdvancedSearch(string searchPhotos)
         {
             try
             {
-                var searchString = new SqlParameter("@Search", "lovestory");
+                var searchString = new SqlParameter("@Search", searchPhotos);
                 List<Photo> result = db.Photos.SqlQuery("SP_AdvancedTypePhotoSearch @Search", searchString).ToList();
                 return PartialView("_PhotosList", result);
             }
             catch(Exception exception)
             {
                 
-                //logger
+               
             }
             return View();
         }
+
+        public ActionResult PhotoAdvancedFilterSearch(string filter, string filterType)
+        {
+            try
+            {
+                var photos = GetAllPhotos();
+                if (!String.IsNullOrEmpty(filter))
+                {
+                    photos = photos.Where(a => a.CameraModel.CameraId.ToString().Contains(filter)).ToList();
+                }
+                return PartialView("_PhotosList", photos);
+            }
+            catch (Exception exception)
+            {
+                
+
+            }
+            return View();
+        }
+
+
+        private List<Photo> GetAllPhotos()
+        {
+            var photos = from m in db.Photos
+                         select m;
+            return photos.ToList();
+        }
+
+        //private List<Photo> GetPhotosByCameraFilter(int cameraFilter)
+        //{
+            
+        //    return;
+        //}
 
         protected override void Dispose(bool disposing)
         {

@@ -1,78 +1,52 @@
 ﻿@model IEnumerable<PhotoManager.Models.Photo>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.UserID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PhotoUrl)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PhotoName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Location)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Keywords)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PhotoLikes)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ISO)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Diaphragm)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ShutterSpeed)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PhotoUrl)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PhotoName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Location)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Keywords)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PhotoLikes)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ISO)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Diaphragm)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ShutterSpeed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
-
-</table>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
+            <div class="thumbnail">
+                <a href="@Url.Action("Details", "Photos", new {id = item.ID})">
+                    <img class="img-responsive" src="@Url.Content(item.PhotoUrl)" style="height:200px">
+                </a>
+                <div style="font-size:12px">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.Label("EXIF")
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
+                            @Html.DisplayFor(modelItem => item.LensModel.LensModel)
+                            @Html.DisplayFor(modelItem => item.Diaphragm)
+                            @Html.DisplayFor(modelItem => item.ShutterSpeed)
+                            @Html.DisplayFor(modelItem => item.ISO)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CreatedDate)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Location)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(modelItem => item.Location)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Keywords)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(modelItem => item.Keywords)
+                        </dd>
+                    </dl>
+                    <div>
+                        @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
+                        @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
+                        <i class='glyphicon glyphicon-plus'></i>
+                        @Html.ActionLink("Add to Album", "Details", new { id = item.ID }, new { @class = "btn btn-sm btn-default" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

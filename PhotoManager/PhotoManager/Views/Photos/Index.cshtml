@@ -5,86 +5,69 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <h2>My photos</h2>
-        <div class="row">
-            <div class="col-md-4">
-                @Html.Partial("_AdvancedPhotoSearch")
 
-            </div>
-            <div class="col-md-4">
-                @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary" })
-                @Html.ActionLink("Manage albums", "Index", "Albums", null, new { @class = "btn btn-primary" })
-            </div>
+<div id="container">
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Partial("_AdvancedPhotoSearch")
         </div>
 
-        <hr/>
-
-        <div class="jumbotron" id="photoList">
-            <div class="row">
-                @foreach (var item in Model)
-                {
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
-                        <div class="thumbnail">
-                            <a href="@Url.Action("Details", "Photos", new {id = item.ID})">
-                                <img class="img-responsive" src="@Url.Content(item.PhotoUrl)" style="height:200px">
-                            </a>
-                            <div style="font-size:12px">
-                                <dl class="dl-horizontal">
-                                    <dt>
-                                        @Html.Label("EXIF")
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
-                                        @Html.DisplayFor(modelItem => item.LensModel.LensModel)
-                                        @Html.DisplayFor(modelItem => item.Diaphragm)
-                                        @Html.DisplayFor(modelItem => item.ShutterSpeed)
-                                        @Html.DisplayFor(modelItem => item.ISO)
-                                    </dd>
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.CreatedDate)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(modelItem => item.CreatedDate)
-                                    </dd>
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.Location)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(modelItem => item.Location)
-                                    </dd>
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.Keywords)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(modelItem => item.Keywords)
-                                    </dd>
-                                </dl>
-                                <div>
-                                    @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
-                                    @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
-                                    <i class='glyphicon glyphicon-plus'></i>
-                                    @Html.ActionLink("Add to Album", "Details", new { id = item.ID }, new { @class = "btn btn-sm btn-default" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
+        <div class="col-md-4 pull-right">
+            @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Manage albums", "Index", "Albums", null, new { @class = "btn btn-primary" })
         </div>
-
-        @section scripts{
-            <script type="text/javascript">
-                $(function () {
-                    $('#advancedSearchType').change(function () {
-                        $(".search-type").hide();
-                        $('#' + $(this).val()).show();
-                    });
+    </div>
+</div>
 
 
+<hr />
+
+<div class="jumbotron" id="photoList">
+    @Html.Partial("_PhotosList")
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/pmscript")
+    @*<script type="text/javascript">
+            $(function () {
+
+                $('#advancedSearchBtn').click(function () {
+                    $('#advancedSearch').toggle();
                 });
 
-            </script>
-        }
+                $('#keywords').on('input', function () {
+                    console.log("change");
+                    console.log($('#keywords').val());
+                    $('#searchPhotos').val($('#keywords').val());
+                });
+                $('#advancedSearchType').change(function () {
+                    $(".search-type").hide();
+                    $('#' + $(this).val()).show();
+                });
+
+                $(".filter").change(function (event) {
+                    var filter = $(this).val();
+                    var filterValue = $(this).text();
+                    var filterType = $(event.target);
+                    var filterType2 = $(this).find('name').val();
+                    $('#searchPhotos').val(filterValue);
+                    console.log(filter);
+                    console.log(filterType);
+                    console.log(filterType2);
+                    $.ajax({
+                        type:'POST',
+                        url: '@Url.Action("PhotoAdvancedFilterSearch")',
+                        data: { "filter": filter, "filterType": filter },
+                        success: function (data) {
+                            $("#photoList").html(data);
+                        }
+                    });
+                });
+
+            });
+
+        </script>*@
+}
 
 
