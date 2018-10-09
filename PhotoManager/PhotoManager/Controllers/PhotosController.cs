@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using NLog;
 using PhotoManager.DataAccess;
 using PhotoManager.Models;
 using PhotoManager.ViewModel;
@@ -18,6 +19,7 @@ namespace PhotoManager.Controllers
     public class PhotosController : Controller
     {
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         // GET: Photos
         public ActionResult Index(string searchString)
@@ -70,7 +72,7 @@ namespace PhotoManager.Controllers
             ViewBag.Diaphragm = new SelectList(new string[] { "f1.2", "f1.4", "f1.8" }, DiaphragmItem);
 
         }
-       
+
 
         // POST: Photos/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -99,7 +101,7 @@ namespace PhotoManager.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var image = Bitmap.FromStream(photoViewModel.PhotoUpload.InputStream);
+                    var photoFile = Bitmap.FromStream(photoViewModel.PhotoUpload.InputStream);
 
 
                     if (photoViewModel.PhotoUpload != null && photoViewModel.PhotoUpload.ContentLength > 0)
@@ -130,11 +132,11 @@ namespace PhotoManager.Controllers
 
                     }
                 }
-
             }
             catch (DataException)
             {
                 ModelState.AddModelError("", "Unable to upload photo");
+
             }
 
             return View(photoViewModel);
@@ -144,7 +146,7 @@ namespace PhotoManager.Controllers
         // GET: Photos/Edit/5
         public ActionResult Edit(int id)
         {
-           
+
             if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -155,7 +157,7 @@ namespace PhotoManager.Controllers
                 return HttpNotFound();
             }
 
-          
+
             PhotoUpdateViewModel photoUpdateViewModel = new PhotoUpdateViewModel
             {
                 PhotoId = photo.ID,
@@ -281,7 +283,7 @@ namespace PhotoManager.Controllers
                         foreach (var album in selectedAlbums)
                         {
                             var albumToAdd = db.Albums.Find(int.Parse(album));
-                                photoToUpdate.Albums.Add(albumToAdd);
+                            photoToUpdate.Albums.Add(albumToAdd);
                         }
                         db.SaveChanges();
                         GetAlbumsAssignedToPhoto(id);
@@ -354,17 +356,7 @@ namespace PhotoManager.Controllers
             return View(photoToUpdate);
         }
 
-        public ActionResult AlbumsList()
-        {
-            return PartialView("AlbumsList");
-        }
-
-        public ActionResult AlbumsViewList()
-        {
-            return PartialView("AlbumsViewList");
-        }
-
-
+   
         //Get list of albums and check if album assigned to current photo
         private void GetAlbumsAssignedToPhoto(int? id)
         {
@@ -394,10 +386,9 @@ namespace PhotoManager.Controllers
                 List<Photo> result = db.Photos.SqlQuery("SP_AdvancedTypePhotoSearch @Search", searchString).ToList();
                 return PartialView("_PhotosList", result);
             }
-            catch(Exception exception)
+            catch (Exception ex)
             {
-                
-               
+                _log.Error(ex, "Unable to search photos");
             }
             return View();
         }
@@ -413,9 +404,9 @@ namespace PhotoManager.Controllers
                 }
                 return PartialView("_PhotosList", photos);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                
+                _log.Error(ex, "Unable to filter photos");
 
             }
             return View();
@@ -431,7 +422,7 @@ namespace PhotoManager.Controllers
 
         //private List<Photo> GetPhotosByCameraFilter(int cameraFilter)
         //{
-            
+
         //    return;
         //}
 
@@ -445,21 +436,4 @@ namespace PhotoManager.Controllers
         }
     }
 
-    //private MultiSelectList GetAlbumsNotAssignedToPhoto(int? id)
-    //{
-    //    Photo photo = db.Photos.Find(id);
-    //    var photoAlbums = photo.Albums.Select(a => a.ID);
-    //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
-    //    return new MultiSelectList(albumsNotAssignedToPhoto, "ID", "Title");
-
-    //}
-
-    //private IEnumerable<Album> GetAlbumsNotAssignedToPhototest(int? id)
-    //{
-    //    Photo photo = db.Photos.Find(id);
-    //    var photoAlbums = photo.Albums.Select(a => a.ID);
-    //    var albumsNotAssignedToPhoto = db.Albums.ToList().Except(photo.Albums);
-    //    return albumsNotAssignedToPhoto;
-
-    //}
 }

@@ -36,6 +36,9 @@ namespace PhotoManager.DataAccess
 
             modelBuilder.Conventions.Remove<PluralizingEntitySetNameConvention>();
         }
+
+        public DbSet<Error> Error { get; set; }
+        public DbSet<LogEntry> LogEntry { get; set; }
     }
 
     public class PhotoManagerDbInitializer : DropCreateDatabaseIfModelChanges<PhotoManagerDBContext>
@@ -203,6 +206,8 @@ namespace PhotoManager.DataAccess
             context.SaveChanges();
             base.Seed(context);
         }
+
+
 
     }
 }

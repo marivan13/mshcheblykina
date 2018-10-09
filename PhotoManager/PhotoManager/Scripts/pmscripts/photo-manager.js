@@ -18,8 +18,8 @@
 
             $(".filter").change(function (event) {
 
-            var filter = $(this).val();
-            var filterValue = $(this).text();
+                var filter = $(this).val();
+                var filterValue = $(this).find('option:selected').text();
             var filterType = $(event.target);
             var filterType2 = $(this).find('name').val();
             $('#searchPhotos').val(filterValue);
@@ -28,7 +28,7 @@
             console.log(filterType2);
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("PhotoAdvancedFilterSearch", "Photos")',
+                    url: '/Photos/PhotoAdvancedFilterSearch',
                     data: {"filter": filter, "filterType": filter },
                     success: function (data) {
                         $("#photoList").html(data);
