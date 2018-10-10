@@ -178,12 +178,12 @@ namespace PhotoManager.Controllers
 
         public ActionResult ShowPhotoInAlbum(IEnumerable<Photo> photos)
         {
-            return PartialView("AlbumPhotoCarousel");
+            return PartialView("_AlbumPhotoCarousell");
         }
 
         public ActionResult PhotoAssignedAlbumsView()
         {
-            return PartialView("PhotoAssignedAlbumsView");
+            return PartialView("_PhotoAssignedToAlbums");
         }
 
         public ActionResult AlbumSearch(string searchString)

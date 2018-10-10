@@ -29,5 +29,42 @@ namespace PhotoManager.Models
         {
             return new ApplicationDbContext();
         }
+
+
     }
+
+
+    public class AppDbInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
+    {
+        protected override void Seed(ApplicationDbContext context)
+        {
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+
+            var regularRole = new IdentityRole { Name = "regular" };
+            var paidRole = new IdentityRole { Name = "paid" };
+            var adminRole = new IdentityRole { Name = "admin" };
+
+            roleManager.Create(regularRole);
+            roleManager.Create(paidRole);
+            roleManager.Create(adminRole);
+
+            var regularUser = new ApplicationUser { Email = "regular.user@gmail.com" };
+            string password = "Qwerty123_";
+
+            var result = userManager.Create(regularUser, password);
+
+            if (result.Succeeded)
+            {
+                userManager.AddToRole(regularUser.Id, regularRole.Name);
+            }
+
+            base.Seed(context);
+        }
+    }
+
+
+
+
 }

@@ -213,12 +213,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Html\ImageHelper.cs" />
     <Compile Include="Helpers\Url\UrlExtensions.cs" />
     <Compile Include="Migrations\201810091437016_PhotoSP.cs" />
     <Compile Include="Migrations\201810091437016_PhotoSP.Designer.cs">
       <DependentUpon>201810091437016_PhotoSP.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Error.cs" />

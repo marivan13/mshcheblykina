@@ -18,23 +18,23 @@
                 <form>
                     <div class="form-group col-sm-3 col-xs-6" id="cameraFilter">
                         <label for="contain">Camera</label>
-                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList,"All", new { @class = "btn btn-default dropdown form-control filter" })
+                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList,"All", new { @class = "btn btn-default dropdown form-control filter", @id = "camera" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6" id="lensFilter">
                         <label for="contain">Lens</label>
-                        @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                        @Html.DropDownList("LensId", ViewBag.Lenses as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "lens" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6">
                         <label for="contain">ISO</label>
-                        @Html.DropDownList("ISO", ViewBag.ISO as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                        @Html.DropDownList("ISO", ViewBag.ISO as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "iso" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6">
                             <label for="contain">Diaphragm</label>
-                            @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                            @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "diaphragm" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6">
                             <label for="contain">Shutter Speed</label>
-                            @Html.DropDownList("ShutterSpeed", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter" })
+                            @Html.DropDownList("ShutterSpeed", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "shutterspeed" })
                      </div>
 
                     <div class="form-group col-sm-3 col-xs-6">

@@ -6,6 +6,8 @@ using System.Data.Entity;
 using PhotoManager.Models;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity.Migrations;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 
 namespace PhotoManager.DataAccess
 {
@@ -45,6 +47,33 @@ namespace PhotoManager.DataAccess
     {
         protected override void Seed(PhotoManagerDBContext context)
         {
+            //var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
+            //var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+
+            //var regularRole = new IdentityRole { Name = "regular" };
+            //var paidRole = new IdentityRole { Name = "paid" };
+            //var adminRole = new IdentityRole { Name = "admin" };
+
+            //roleManager.Create(regularRole);
+            //roleManager.Create(paidRole);
+            //roleManager.Create(adminRole);
+
+            //var regularUser = new ApplicationUser { Email = "regular.user@gmail.com" };
+            //string password = "Qwerty123_";
+
+            //var result = userManager.Create(regularUser, password);
+
+            //if (result.Succeeded)
+            //{
+            //    userManager.AddToRole(regularUser.Id, regularRole.Name);
+            //}
+
+           //var users = new List<AspNetUsers>
+
+
+
+
             var cameraModels = new List<Camera>
             {
                 new Camera { CameraModel = "Canon 6d" },
@@ -74,7 +103,7 @@ namespace PhotoManager.DataAccess
                     {
                         PhotoName = "IMG_123.jpeg",
                         PhotoUrl = "~/Images/IMG_123.jpeg",
-                        UserID = 1,
+                        UserID = "1",// regularUser.Id,
                         CameraModel = cameraModels[0],
                         Location = "Stambul",
                         Diaphragm = "f2.0",
@@ -86,7 +115,7 @@ namespace PhotoManager.DataAccess
                     new Photo
                     {
                         PhotoName = "IMG_124.jpeg",
-                        UserID = 1,
+                        UserID = "1",// regularUser.Id,
                         PhotoUrl = "~/Images/IMG_124.jpeg",
                         CameraModel = cameraModels[1],
                         Location = "Stambul",
@@ -100,7 +129,7 @@ namespace PhotoManager.DataAccess
                     {
                         PhotoName = "IMG_125.jpeg",
                         PhotoUrl = "~/Images/IMG_123.jpeg",
-                        UserID = 1,
+                        UserID = "1",// regularUser.Id,
                         CameraModel = cameraModels[2],
                         Location = "Stambul",
                         Diaphragm = "f1.4",
@@ -112,7 +141,7 @@ namespace PhotoManager.DataAccess
                     new Photo
                     {
                         PhotoName = "IMG_126.jpeg",
-                        UserID = 1,
+                        UserID = "1",// regularUser.Id,
                         PhotoUrl = "~/Images/IMG_124.jpeg",
                         CameraModel = cameraModels[3],
                         Location = "Stambul",

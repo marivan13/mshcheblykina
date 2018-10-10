@@ -11,25 +11,21 @@
             $('#searchPhotos').val($('#keywords').val());
             });
 
-            $('#advancedSearchType').change(function () {
-                $(".search-type").hide();
-            $('#' + $(this).val()).show();
-    });
+            //$('#advancedSearchType').change(function () {
+            //    $(".search-type").hide();
+            //$('#' + $(this).val()).show();
+    //});
 
-            $(".filter").change(function (event) {
+            $(".filter").change(function () {
 
                 var filter = $(this).val();
                 var filterValue = $(this).find('option:selected').text();
-            var filterType = $(event.target);
-            var filterType2 = $(this).find('name').val();
+                var filterType = this.id;
             $('#searchPhotos').val(filterValue);
-            console.log(filter);
-            console.log(filterType);
-            console.log(filterType2);
                 $.ajax({
                     type: 'POST',
                     url: '/Photos/PhotoAdvancedFilterSearch',
-                    data: {"filter": filter, "filterType": filter },
+                    data: { "filter": filterValue, "filterType": filterType },
                     success: function (data) {
                         $("#photoList").html(data);
                     }

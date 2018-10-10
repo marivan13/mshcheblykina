@@ -16,12 +16,14 @@ using PhotoManager.ViewModel;
 
 namespace PhotoManager.Controllers
 {
+    [Authorize]
     public class PhotosController : Controller
     {
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         // GET: Photos
+        
         public ActionResult Index(string searchString)
         {
             SetPhotoInfo();
@@ -400,7 +402,26 @@ namespace PhotoManager.Controllers
                 var photos = GetAllPhotos();
                 if (!String.IsNullOrEmpty(filter))
                 {
-                    photos = photos.Where(a => a.CameraModel.CameraId.ToString().Contains(filter)).ToList();
+                    switch (filterType)
+                    {
+                        case "camera":
+                            photos = photos.Where(a => a.CameraModel.CameraModel.Contains(filter)).ToList();
+                            break;
+                        case "lens":
+                            photos = photos.Where(a => a.LensModel.LensModel.Contains(filter)).ToList();
+                            break;
+                        case "iso":
+                            photos = photos.Where(a => a.ISO.Contains(filter)).ToList();
+                            break;
+                        case "diaphragm":
+                            photos = photos.Where(a => a.Diaphragm.Contains(filter)).ToList();
+                            break;
+                        case "shutterspeed":
+                            photos = photos.Where(a => a.ShutterSpeed.Contains(filter)).ToList();
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 return PartialView("_PhotosList", photos);
             }

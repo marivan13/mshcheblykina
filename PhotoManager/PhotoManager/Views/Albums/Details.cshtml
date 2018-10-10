@@ -25,15 +25,11 @@
         <div class="row" id="album-photos">
             @if (Model.Photos.Count != 0)
             {
-                var dataSlideNum = 0;
                 foreach (var photo in Model.Photos)
                 {
-                    @*<a href="@Url.Action("ShowPhotoInAlbum", "Albums", new { photos = Model.Photos})" data-target="#photo-carousel" data-toggle="modal">*@
-
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
-                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal" data-slide-to="@dataSlideNum">
+                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal">
                 </div>
-                    @*</a>*@
                 }
             }
 
