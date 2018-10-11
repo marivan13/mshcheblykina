@@ -20,7 +20,7 @@ namespace PhotoManager
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         protected void Application_Start()
         {
-            Database.SetInitializer(new AppDbInitializer());
+           
             Database.SetInitializer(new PhotoManagerDbInitializer());
             
             AreaRegistration.RegisterAllAreas();

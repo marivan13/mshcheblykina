@@ -8,20 +8,43 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity.Migrations;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace PhotoManager.DataAccess
 {
-    public class PhotoManagerDBContext : DbContext
+    public class ApplicationUser : IdentityUser
+    {
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+        {
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            // Add custom user claims here
+            return userIdentity;
+        }
+    }
+    public class PhotoManagerDBContext : IdentityDbContext<ApplicationUser>
     {
  
         public PhotoManagerDBContext() : base("DefaultConnection")
         {
 
         }
+
+        public static PhotoManagerDBContext Create()
+        {
+            return new PhotoManagerDBContext();
+        }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Camera> Cameras { get; set; }
         public DbSet<Lens> Lenses { get; set; }
+
+        //public virtual DbSet<IdentityRole> Roles { get; set; }
+        //public virtual DbSet<ApplicationUser> Users { get; set; }
+        //public virtual DbSet<IdentityUserClaim> UserClaims { get; set; }
+        //public virtual DbSet<IdentityUserLogin> UserLogins { get; set; }
+        //public virtual DbSet<IdentityUserRole> UserRoles { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -36,41 +59,53 @@ namespace PhotoManager.DataAccess
                    cs.ToTable("AlbumPhoto");
                });
 
+
             modelBuilder.Conventions.Remove<PluralizingEntitySetNameConvention>();
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Error> Error { get; set; }
         public DbSet<LogEntry> LogEntry { get; set; }
     }
 
+    //public class PhotoManagerDbInitializer : DropCreateDatabaseAlways<PhotoManagerDBContext>
     public class PhotoManagerDbInitializer : DropCreateDatabaseIfModelChanges<PhotoManagerDBContext>
     {
         protected override void Seed(PhotoManagerDBContext context)
         {
-            //var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
-            //var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
 
-            //var regularRole = new IdentityRole { Name = "regular" };
-            //var paidRole = new IdentityRole { Name = "paid" };
-            //var adminRole = new IdentityRole { Name = "admin" };
+            var regularRole = new IdentityRole { Name = "regular" };
+            var paidRole = new IdentityRole { Name = "paid" };
+            var adminRole = new IdentityRole { Name = "admin" };
 
-            //roleManager.Create(regularRole);
-            //roleManager.Create(paidRole);
-            //roleManager.Create(adminRole);
+            roleManager.Create(regularRole);
+            roleManager.Create(paidRole);
+            roleManager.Create(adminRole);
 
-            //var regularUser = new ApplicationUser { Email = "regular.user@gmail.com" };
-            //string password = "Qwerty123_";
+            var regularUser = new ApplicationUser { Email = "regular.user@gmail.com", UserName = "regular.user@gmail.com" };
+            var paidUser = new ApplicationUser { Email = "paid.user@gmail.com", UserName = "paid.user@gmail.com" };
+            var adminUser = new ApplicationUser { Email = "admin.user@gmail.com", UserName = "admin.user@gmail.com" };
+            string password = "Qwerty123_";
 
-            //var result = userManager.Create(regularUser, password);
+            if (userManager.Create(regularUser, password).Succeeded)
+            {
+                userManager.AddToRole(regularUser.Id, regularRole.Name);
+            }
 
-            //if (result.Succeeded)
-            //{
-            //    userManager.AddToRole(regularUser.Id, regularRole.Name);
-            //}
+            if (userManager.Create(paidUser, password).Succeeded)
+            {
+                userManager.AddToRole(paidUser.Id, paidRole.Name);
+            }
 
-           //var users = new List<AspNetUsers>
+            if (userManager.Create(adminUser, password).Succeeded)
+            {
 
+                userManager.AddToRole(adminUser.Id, adminRole.Name);
+                userManager.AddToRole(adminUser.Id, paidRole.Name);
+            }
 
 
 
@@ -103,7 +138,7 @@ namespace PhotoManager.DataAccess
                     {
                         PhotoName = "IMG_123.jpeg",
                         PhotoUrl = "~/Images/IMG_123.jpeg",
-                        UserID = "1",// regularUser.Id,
+                        UserID =  regularUser.Id,
                         CameraModel = cameraModels[0],
                         Location = "Stambul",
                         Diaphragm = "f2.0",
@@ -115,7 +150,7 @@ namespace PhotoManager.DataAccess
                     new Photo
                     {
                         PhotoName = "IMG_124.jpeg",
-                        UserID = "1",// regularUser.Id,
+                        UserID =  regularUser.Id,
                         PhotoUrl = "~/Images/IMG_124.jpeg",
                         CameraModel = cameraModels[1],
                         Location = "Stambul",
@@ -128,8 +163,8 @@ namespace PhotoManager.DataAccess
                     new Photo
                     {
                         PhotoName = "IMG_125.jpeg",
-                        PhotoUrl = "~/Images/IMG_123.jpeg",
-                        UserID = "1",// regularUser.Id,
+                        PhotoUrl = "~/Images/IMG_125.jpeg",
+                        UserID =  regularUser.Id,
                         CameraModel = cameraModels[2],
                         Location = "Stambul",
                         Diaphragm = "f1.4",
@@ -141,11 +176,37 @@ namespace PhotoManager.DataAccess
                     new Photo
                     {
                         PhotoName = "IMG_126.jpeg",
-                        UserID = "1",// regularUser.Id,
-                        PhotoUrl = "~/Images/IMG_124.jpeg",
+                        UserID = regularUser.Id,
+                        PhotoUrl = "~/Images/IMG_126.jpeg",
                         CameraModel = cameraModels[3],
                         Location = "Stambul",
                         Diaphragm = "f2.2",
+                        ISO = "800",
+                        LensModel = lensModels[3],
+                        ShutterSpeed = "1/125",
+                        Keywords = "#portrait #lovestory"
+                    },
+                    new Photo
+                    {
+                        PhotoName = "IMG_127.jpeg",
+                        UserID = paidUser.Id,
+                        PhotoUrl = "~/Images/IMG_127.jpeg",
+                        CameraModel = cameraModels[3],
+                        Location = "Stambul",
+                        Diaphragm = "f2.2",
+                        ISO = "800",
+                        LensModel = lensModels[3],
+                        ShutterSpeed = "1/125",
+                        Keywords = "#portrait #lovestory"
+                    },
+                    new Photo
+                    {
+                        PhotoName = "IMG_128.jpeg",
+                        UserID = paidUser.Id,
+                        PhotoUrl = "~/Images/IMG_128.jpeg",
+                        CameraModel = cameraModels[3],
+                        Location = "Stambul",
+                        Diaphragm = "f2.4",
                         ISO = "800",
                         LensModel = lensModels[3],
                         ShutterSpeed = "1/125",
@@ -160,17 +221,17 @@ namespace PhotoManager.DataAccess
                     new Album {
                     Title = "Landscape1",
                     Description = "Landscape1 Description",
-                    UserID = 1,
+                    UserID = regularUser.Id,
                     AlbumType = AlbumType.PublicAlbum,
                     AlbumCategory = AlbumCategory.Landscape,
-                    Photos = photos.ToList()
+                    Photos = photos.GetRange(0,3)
 
                   },
                     new Album
                     {
                         Title = "Landscape2",
                         Description = "Landscape2 Description",
-                        UserID = 1,
+                        UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Landscape,
                         Photos = photos.ToList()
@@ -179,7 +240,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Lovestory1",
                         Description = "Lovestory1 Description",
-                        UserID = 1,
+                        UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
                         Photos = photos.ToList()
@@ -188,7 +249,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Lovestory2",
                         Description = "Lovestory2 Description",
-                        UserID = 1,
+                        UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
                         Photos = photos.ToList()
@@ -197,7 +258,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Portrait1",
                         Description = "Portrait1 Description",
-                        UserID = 1,
+                        UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
                         Photos = photos.ToList()
@@ -206,7 +267,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Portrait2",
                         Description = "Portrait2 Description",
-                        UserID = 1,
+                        UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
                         Photos = photos.ToList()
@@ -215,7 +276,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Wedding1",
                         Description = "Wedding1 Description",
-                        UserID = 1,
+                        UserID = paidUser.Id,
                         AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
                         Photos = photos.ToList()
@@ -224,7 +285,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Wedding2",
                         Description = "Wedding2 Description",
-                        UserID = 1,
+                        UserID = paidUser.Id,
                         AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
                         Photos = photos.ToList()

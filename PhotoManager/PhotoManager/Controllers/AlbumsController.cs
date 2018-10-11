@@ -79,7 +79,7 @@ namespace PhotoManager.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    album.UserID = 1;
+                    album.UserID = "1";
                     db.Albums.Add(album);
                     db.SaveChanges();
                     return RedirectToAction("Index");

@@ -26,7 +26,7 @@ namespace PhotoManager.Models
     {   [Key] 
         public int ID { get; set; }
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         [Required]
         [StringLength(450)]
         [Index(IsUnique = true)]
