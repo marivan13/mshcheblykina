@@ -69,7 +69,7 @@ namespace PhotoManager.DataAccess
     }
 
     //public class PhotoManagerDbInitializer : DropCreateDatabaseAlways<PhotoManagerDBContext>
-    public class PhotoManagerDbInitializer : DropCreateDatabaseIfModelChanges<PhotoManagerDBContext>
+    public class PhotoManagerDbInitializer : DropCreateDatabaseAlways<PhotoManagerDBContext>
     {
         protected override void Seed(PhotoManagerDBContext context)
         {
@@ -234,7 +234,7 @@ namespace PhotoManager.DataAccess
                         UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Landscape,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(2,3)
                     },
                     new Album
                     {
@@ -243,16 +243,16 @@ namespace PhotoManager.DataAccess
                         UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(0,4)
                     },
                     new Album
                     {
                         Title = "Lovestory2",
                         Description = "Lovestory2 Description",
                         UserID = regularUser.Id,
-                        AlbumType = AlbumType.PublicAlbum,
+                        AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.LoveStory,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(1,1)
                     },
                     new Album
                     {
@@ -261,7 +261,7 @@ namespace PhotoManager.DataAccess
                         UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(1,3)
                     },
                     new Album
                     {
@@ -270,7 +270,7 @@ namespace PhotoManager.DataAccess
                         UserID = regularUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(2,2)
                     },
                     new Album
                     {
@@ -279,7 +279,7 @@ namespace PhotoManager.DataAccess
                         UserID = paidUser.Id,
                         AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(4,2)
                     },
                     new Album
                     {
@@ -288,7 +288,7 @@ namespace PhotoManager.DataAccess
                         UserID = paidUser.Id,
                         AlbumType = AlbumType.PrivateAlbum,
                         AlbumCategory = AlbumCategory.Wedding,
-                        Photos = photos.ToList()
+                        Photos = photos.GetRange(5,1)
                     }
                 };
 

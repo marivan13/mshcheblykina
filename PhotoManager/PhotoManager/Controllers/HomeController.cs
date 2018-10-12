@@ -38,7 +38,6 @@ namespace PhotoManager.Controllers
             return PartialView("_PublicAlbumsList", albums.ToList());
         }
 
-
         public ActionResult SortByAlbumCategory(AlbumCategory? albumCategory)
         {
             var albums = from m in db.Albums

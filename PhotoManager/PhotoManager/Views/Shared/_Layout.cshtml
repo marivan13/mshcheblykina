@@ -24,8 +24,8 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (Request.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Albums", "Index", "Albums")</li>
-                        <li>@Html.ActionLink("Photos", "Index", "Photos")</li>
+                        <li>@Html.ActionLink("My Albums", "Index", "Albums")</li>
+                        <li>@Html.ActionLink("My Photos", "Index", "Photos")</li>
                     }
                     </ul>
                 @Html.Partial("_LoginPartial")

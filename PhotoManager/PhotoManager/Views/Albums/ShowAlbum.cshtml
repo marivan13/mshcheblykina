@@ -9,7 +9,7 @@
         <h4> @Html.DisplayFor(model => model.Title)</h4>
     </div>
 </div>
-<hr/>
+<hr />
 <div class="jumbotron">
     <div class="container">
         <div class="row" id="album-photos">
@@ -17,12 +17,10 @@
             {
                 foreach (var photo in Model.Photos)
                 {
-                    @*<a href="#" data-toggle="modal" data-image="@Url.Content(photo.PhotoUrl)" data-target="#photo-gallary">*@
-                    <a href="@Url.Action("ShowPhotoInAlbum", "Albums", new { photos = Model.Photos})" data-target="#photo-gallary" data-toggle="modal">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
-                            <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px">
-                        </div>
-                    </a>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
+                        <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal">
+                    </div>
+                    @*</a>*@
                 }
             }
 
@@ -30,3 +28,23 @@
     </div>
 </div>
 
+<div class="" id="photosModalShow">
+    @Html.Partial("_AlbumPhotoCarousel")
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+
+            $("#modal-carousel").carousel('pause');
+
+            $(".row .img-responsive").click(function () {
+                console.log(this);
+                $("[id^=modal_]").removeClass("active");
+                $("#modal_" + this.id).addClass("active");
+            });
+
+        });
+
+    </script>
+}

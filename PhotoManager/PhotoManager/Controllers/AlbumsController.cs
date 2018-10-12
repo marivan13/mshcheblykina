@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using PhotoManager.DataAccess;
 using PhotoManager.Models;
 using PhotoManager.ViewModel;
@@ -19,14 +20,17 @@ namespace PhotoManager.Controllers
         // GET: Albums
         public ActionResult Index(AlbumCategory? albumCategory)
         {
+
+            var albumsUserCount = GetAlbumsCountForUser(User.Identity.GetUserId());
             var albums = from m in db.Albums
-                         where m.AlbumType == AlbumType.PublicAlbum
                          select m;
 
             if (albumCategory != null)
             {
                 albums = albums.Where(a => a.AlbumCategory == albumCategory);
             }
+
+            ViewBag.AlbumsUserCount = albumsUserCount;
             return View(albums.ToList());
         }
         // GET: Albums/Details/5
@@ -198,27 +202,7 @@ namespace PhotoManager.Controllers
             return PartialView("_AlbumsList", albums.ToList());
         }
 
-        private void GetPhotosAssignedToAlbum(int? id)
-        {
-            Album album = db.Albums.Find(id);
-            var albumsPhoto = album.Photos.Select(a => a.ID);
-            var allPhotos = db.Photos;
-            var photosAssignedViewModel = new List<PhotoAssignedAlbumsViewModel>();
-            foreach (var photo in allPhotos)
-            {
-                photosAssignedViewModel.Add(new PhotoAssignedAlbumsViewModel
-                {
-                    PhotoID = photo.ID,
-                    PhotoName = photo.PhotoName,
-                    PhotoUrl = photo.PhotoUrl,
-                    PhotoAssigned = albumsPhoto.Contains(photo.ID)
-
-                });
-            }
-
-            ViewBag.PhotosAssignedList = photosAssignedViewModel;
-
-        }
+        
         [HttpPost]
         public ActionResult UpdatePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
         {
@@ -268,6 +252,8 @@ namespace PhotoManager.Controllers
             return View(albumToUpdate);
 
         }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -275,6 +261,37 @@ namespace PhotoManager.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void GetPhotosAssignedToAlbum(int? id)
+        {
+            Album album = db.Albums.Find(id);
+            var albumsPhoto = album.Photos.Select(a => a.ID);
+            var allPhotos = db.Photos;
+            var photosAssignedViewModel = new List<PhotoAssignedAlbumsViewModel>();
+            foreach (var photo in allPhotos)
+            {
+                photosAssignedViewModel.Add(new PhotoAssignedAlbumsViewModel
+                {
+                    PhotoID = photo.ID,
+                    PhotoName = photo.PhotoName,
+                    PhotoUrl = photo.PhotoUrl,
+                    PhotoAssigned = albumsPhoto.Contains(photo.ID)
+
+                });
+            }
+
+            ViewBag.PhotosAssignedList = photosAssignedViewModel;
+
+        }
+
+        private int GetAlbumsCountForUser(string userID)
+        {
+            var albumCount = (from album in db.Albums
+                             where album.UserID == userID select album).Count();
+
+            var albumCount2 = db.Albums.Where(a => a.UserID.Equals(userID)).Count();
+            return albumCount;
         }
     }
 }

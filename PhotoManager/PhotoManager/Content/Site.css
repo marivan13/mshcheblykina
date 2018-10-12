@@ -12,9 +12,6 @@
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
-.dl-horizontal dt {
-  
-}
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
@@ -42,7 +39,7 @@ textarea {
     object-fit: cover;
 }
 .carousel {
-    position: absolute; 
+    position: relative; 
 }
 
 

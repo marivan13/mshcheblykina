@@ -4,36 +4,6 @@
 @{
 
 }
-
-<div class="row">
-    <div class="row display-flex">
-        @foreach (var album in Model)
-        {
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                <div class="thumbnail">
-                    @if (album.Photos.Count != 0)
-                    {
-                        <a href="@Url.Action("Details", "Albums", new { id = album.ID })">
-                            <img class="img-responsive" src="@Url.Content(album.Photos.First().PhotoUrl)" style="height:150px">
-                        </a>
-                    }
-                    else
-                    {
-                        <img class="img-responsive" src="@Url.Content("~/Images/NoPhotos.jpeg")" style="height:150px">
-                    }
-                    <h5>
-                        @Html.DisplayFor(albumItem => album.Title)
-                    </h5>
-                    <div style="font-size:12px">
-                        @Html.ActionLink(" ", "Edit", new { id = album.ID }, new { @class = "glyphicon glyphicon-edit" })
-                        @Html.ActionLink(" ", "Delete", new { id = album.ID }, new { @class = "glyphicon glyphicon-remove" })
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
 <div class="row">
     <div class="row display-flex">
         @foreach (var album in Model)
@@ -64,3 +34,33 @@
         }
     </div>
 </div>
+
+
+@*<div class="row">
+        <div class="row display-flex">
+            @foreach (var album in Model)
+            {
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <div class="thumbnail">
+                        @if (album.Photos.Count != 0)
+                        {
+                            <a href="@Url.Action("Details", "Albums", new { id = album.ID })">
+                                <img class="img-responsive" src="@Url.Content(album.Photos.First().PhotoUrl)" style="height:150px">
+                            </a>
+                        }
+                        else
+                        {
+                            <img class="img-responsive" src="@Url.Content("~/Images/NoPhotos.jpeg")" style="height:150px">
+                        }
+                        <h5>
+                            @Html.DisplayFor(albumItem => album.Title)
+                        </h5>
+                        <div style="font-size:12px">
+                            @Html.ActionLink(" ", "Edit", new { id = album.ID }, new { @class = "glyphicon glyphicon-edit" })
+                            @Html.ActionLink(" ", "Delete", new { id = album.ID }, new { @class = "glyphicon glyphicon-remove" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>*@

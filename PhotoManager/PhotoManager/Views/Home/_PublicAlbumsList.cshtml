@@ -8,10 +8,12 @@
     @foreach (var album in Model)
     {
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-            <a href="@Url.Action("Details", "Albums", new {id = album.ID})">
-                <img class="img-responsive thumbnail" src="@Url.Content(album.Photos.ToList().First().PhotoUrl)" style="height:200px">
-            </a>
-            @Html.DisplayFor(modelItem => album.Title)
+            <div class="thumbnail">
+                <a href="@Url.Action("ShowAlbum", "Albums", new { title = album.Title })">
+                    <img class="img-responsive" src="@Url.Content(album.Photos.ToList().First().PhotoUrl)" style="height:200px">
+                </a>
+                @Html.DisplayFor(modelItem => album.Title)
+             </div>
         </div>
     }
 </div>

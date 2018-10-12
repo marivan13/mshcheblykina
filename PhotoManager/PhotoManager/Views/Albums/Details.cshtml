@@ -14,8 +14,9 @@
     <div class="col-md-6">
         @*<a href="@Url.PublicAlbumUrl(Model.Title)" title="">Get album link</a>*@
 
-        @Html.ActionLink("Get album link", "ShowAlbum", "Albums", new { title = Model.Title }, new { @class = "btn btn-primary", target = "_blank" })
-        @Html.ActionLink("Edit album", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Get album link", "ShowAlbum", "Albums", new { title = Model.Title }, new { @class = "btn btn-primary", target = "_blank" })
+            @Html.ActionLink("Edit album", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+        
     </div>
 
 </div>
@@ -27,18 +28,32 @@
             {
                 foreach (var photo in Model.Photos)
                 {
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 thumbnail">
-                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal">
-                </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div class="thumbnail">
+                            <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" title="@photo.PhotoName" style="height:250px" id="@photo.ID" data-target="#photo-carousel" data-toggle="modal">
+                        </div>
+                    </div>
                 }
             }
-
         </div>
     </div>
 </div>
 
 <div class="">
     <dl class="dl-horizontal">
+        @*to do: add user name when not log in and for public page*@
+        @*@if (!Request.IsAuthenticated)
+            {
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UserID)
+                </dt>
+
+                <dd>
+                    @Html.Display(" ")
+                </dd>
+
+            }*@
 
         <dt>
             @Html.DisplayNameFor(model => model.Title)
@@ -79,12 +94,14 @@
 
 </div>
 <hr>
-@Html.ActionLink("Back to Albums", "Index")
+
+    @Html.ActionLink("Back to Albums", "Index")
+
 
 <!---modal dialog for view photos in carousel-->
 <div class="" id="photosModalShow">
     @Html.Partial("_AlbumPhotoCarousel")
-    </div>
+</div>
 @section scripts{
     <script type="text/javascript">
         $(function () {
