@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using NLog;
 using PhotoManager.DataAccess;
 using PhotoManager.Models;
 using PhotoManager.ViewModel;
@@ -15,23 +17,37 @@ namespace PhotoManager.Controllers
 {
     public class AlbumsController : Controller
     {
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
+       
+        private readonly int allowAlbumsCountForRegularUser = 5;
+
 
         // GET: Albums
         public ActionResult Index(AlbumCategory? albumCategory)
         {
+            ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+            ViewBag.DisabledRegularUser = false;
 
-            var albumsUserCount = GetAlbumsCountForUser(User.Identity.GetUserId());
-            var albums = from m in db.Albums
-                         select m;
-
-            if (albumCategory != null)
+            if (user != null)
             {
-                albums = albums.Where(a => a.AlbumCategory == albumCategory);
+               var userRole = userManager.GetRoles(user.Id).FirstOrDefault();
+               var albums = db.Albums.Where(a => a.UserID == user.Id).ToList();
+
+                if (userRole == "regular" && albums.Count() >= allowAlbumsCountForRegularUser)
+                {
+                    ViewBag.DisabledRegularUser = true;
+                }
+
+                if (albumCategory != null)
+                {
+                    albums = albums.Where(a => a.AlbumCategory == albumCategory).ToList();
+                }
+                return View(albums);
             }
 
-            ViewBag.AlbumsUserCount = albumsUserCount;
-            return View(albums.ToList());
+            return RedirectToAction("Index", "Home");  
         }
         // GET: Albums/Details/5
         public ActionResult Details(int? id)
@@ -72,18 +88,20 @@ namespace PhotoManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,UserID,Title,AlbumType,Description")] Album album)
+        public ActionResult Create([Bind(Include = "Title,AlbumType,AlbumCategory,Description")] Album album)
         {
             try
             {
-                if (db.Albums.Select(a => a.Title).Contains(album.Title))
+                ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+
+                if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title))
                 {
                     ModelState.AddModelError("Title", album.Title + " already exists in your albums");
                 }
                 if (ModelState.IsValid)
                 {
-
-                    album.UserID = "1";
+                    album.UserID = user.Id;
                     db.Albums.Add(album);
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -99,18 +117,18 @@ namespace PhotoManager.Controllers
 
         [HttpGet]
         // GET: Albums/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? albumId)
         {
-            if (id == null)
+            if (albumId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Album album = db.Albums.Find(id);
+            Album album = db.Albums.Find(albumId);
             if (album == null)
             {
                 return HttpNotFound();
             }
-            GetPhotosAssignedToAlbum(id);
+            GetPhotosAssignedToAlbum(albumId, album.UserID);
             return View(album);
         }
 
@@ -180,11 +198,6 @@ namespace PhotoManager.Controllers
             return RedirectToAction("Edit", new { id = album.ID });
         }
 
-        public ActionResult ShowPhotoInAlbum(IEnumerable<Photo> photos)
-        {
-            return PartialView("_AlbumPhotoCarousell");
-        }
-
         public ActionResult PhotoAssignedAlbumsView()
         {
             return PartialView("_PhotoAssignedToAlbums");
@@ -239,7 +252,7 @@ namespace PhotoManager.Controllers
 
                         }
                         db.SaveChanges();
-                        GetPhotosAssignedToAlbum(id);
+                        GetPhotosAssignedToAlbum(id, albumToUpdate.UserID);
                         return PartialView("_PhotoAssignedToAlbums");
                     }
                 }
@@ -263,11 +276,11 @@ namespace PhotoManager.Controllers
             base.Dispose(disposing);
         }
 
-        private void GetPhotosAssignedToAlbum(int? id)
+        private void GetPhotosAssignedToAlbum(int? albumId, string userId)
         {
-            Album album = db.Albums.Find(id);
+            Album album = db.Albums.Find(albumId);
             var albumsPhoto = album.Photos.Select(a => a.ID);
-            var allPhotos = db.Photos;
+            var allPhotos = db.Photos.Where(p => p.UserID == userId);
             var photosAssignedViewModel = new List<PhotoAssignedAlbumsViewModel>();
             foreach (var photo in allPhotos)
             {
@@ -285,13 +298,5 @@ namespace PhotoManager.Controllers
 
         }
 
-        private int GetAlbumsCountForUser(string userID)
-        {
-            var albumCount = (from album in db.Albums
-                             where album.UserID == userID select album).Count();
-
-            var albumCount2 = db.Albums.Where(a => a.UserID.Equals(userID)).Count();
-            return albumCount;
-        }
     }
 }

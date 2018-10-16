@@ -6,7 +6,7 @@
 <div class="row">
     @foreach (var item in Model)
         {
-            var imageLink = (@Url.Action("Details", "Photos", new { id = item.ID })).ToString();
+            var imageLink = (@Url.Action("Details", "Photos", new { photoId = item.ID })).ToString();
             var imageUrl = (@Url.Content(item.PhotoUrl)).ToString();
             var imageStyle = "height:200px";
 
@@ -48,7 +48,7 @@
                     @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
                     @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
                     <i class='glyphicon glyphicon-plus'></i>
-                    @Html.ActionLink("Add to Album", "Details", new { id = item.ID }, new { @class = "btn btn-sm btn-default" })
+                    @Html.ActionLink("Add to Album", "Details", new { photoId = item.ID }, new { @class = "btn btn-sm btn-default" })
                 </div>
             </div>
         </div>

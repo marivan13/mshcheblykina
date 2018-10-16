@@ -26,11 +26,10 @@ namespace PhotoManager.Models
     public class Album
     {   [Key] 
         public int ID { get; set; }
-        [Required]
         public string UserID { get; set; }
         [Required]
-        [StringLength(450)]
-        [Index(IsUnique = true)]
+        //[StringLength(450)]
+        //[Index(IsUnique = true)]
         public string Title { get; set; }
         [Display(Name = "Type")]
         public AlbumType AlbumType { get; set; }

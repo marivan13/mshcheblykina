@@ -12,7 +12,14 @@
         @Html.Partial("_AlbumSearch")
     </div>
     <div class="col-md-4">
-        @Html.ActionLink("Add new album", "Create", null, new { @class = "btn btn-primary" })
+        @if (ViewBag.DisabledRegularUser)
+        {
+            @Html.ActionLink("Add new album", "Create", null, new { @class = "btn btn-primary", @disabled = "disabled" })
+        }
+        else
+        {
+            @Html.ActionLink("Add new album", "Create", null, new { @class = "btn btn-primary" })
+        }
     </div>
 </div>
 

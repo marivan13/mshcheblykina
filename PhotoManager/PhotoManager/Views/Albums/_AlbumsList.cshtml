@@ -8,14 +8,15 @@
     <div class="row display-flex">
         @foreach (var album in Model)
         {
-            var imageLink = (@Url.Action("Details", "Albums", new { id = album.ID })).ToString();
-            var imageUrl = (@Url.Content(album.Photos.First().PhotoUrl)).ToString();
-            var imageStyle = "height:150px";
 
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <div class="thumbnail">
                     @if (album.Photos.Count != 0)
                     {
+                        var imageLink = (@Url.Action("Details", "Albums", new { id = album.ID })).ToString();
+                        var imageUrl = (@Url.Content(album.Photos.First().PhotoUrl)).ToString();
+                        var imageStyle = "height:150px";
+
                         @Html.ImageWithLink(imageLink, imageUrl, imageStyle)
                     }
                     else

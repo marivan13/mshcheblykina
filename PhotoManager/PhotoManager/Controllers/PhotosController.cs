@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using NLog;
 using PhotoManager.DataAccess;
 using PhotoManager.Models;
@@ -22,37 +24,53 @@ namespace PhotoManager.Controllers
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
+        private readonly int allowPhotosCountForRegularUser = 10;
+
         // GET: Photos
-        
+
         public ActionResult Index(string searchString)
         {
             SetPhotoInfo();
-            var photos = from m in db.Photos
-                         select m;
+            ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+            ViewBag.DisabledRegularUser = false;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (user != null)
             {
-                photos = photos.Where(a => a.ISO.ToString().ToLower() == searchString);
+                var userRole = userManager.GetRoles(user.Id).FirstOrDefault();
+
+                var photos = db.Photos.Where(a => a.UserID == user.Id).ToList();
+
+                if (userRole == "regular" && photos.Count() >= allowPhotosCountForRegularUser)
+                {
+                    ViewBag.DisabledRegularUser = true;
+                }
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    //find by all parameters
+                    photos = photos.Where(a => a.ISO.ToString().ToLower() == searchString || a.Keywords.ToLower() == searchString).ToList();
+                }
+                return View(photos);
             }
 
-            //add for  user
-            return View(db.Photos.ToList());
+            return View();
         }
 
         // GET: Photos/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? photoId)
         {
-            if (id == null)
+            if (photoId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Photo photo = db.Photos.Find(id);
+            Photo photo = db.Photos.Find(photoId);
             if (photo == null)
             {
                 return HttpNotFound();
             }
 
-            GetAlbumsAssignedToPhoto(id);
+            GetAlbumsAssignedToPhoto(photoId, photo.UserID);
             return View(photo);
         }
 
@@ -103,6 +121,9 @@ namespace PhotoManager.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                    ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+
                     var photoFile = Bitmap.FromStream(photoViewModel.PhotoUpload.InputStream);
 
 
@@ -116,6 +137,7 @@ namespace PhotoManager.Controllers
 
                         var photo = new Photo
                         {
+                            UserID = user.Id,
                             PhotoUrl = photoUrl,
                             PhotoName = fileName,
                             ISO = photoViewModel.ISO,
@@ -196,8 +218,10 @@ namespace PhotoManager.Controllers
                     try
                     {
 
+
                         photoToUpdate.CameraModel = db.Cameras.Find(photoUpdateViewModel.CameraId);
                         photoToUpdate.LensModel = db.Lenses.Find(photoUpdateViewModel.LensId);
+
 
 
                         //if (photoUpdateViewModel.AlbumsNotAssigned != null)
@@ -231,9 +255,6 @@ namespace PhotoManager.Controllers
                         ModelState.AddModelError("", "Unable to save");
                     }
                 }
-
-                //    db.Entry(photo).State = EntityState.Modified;
-                //     db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(photoUpdateViewModel);
@@ -288,7 +309,7 @@ namespace PhotoManager.Controllers
                             photoToUpdate.Albums.Add(albumToAdd);
                         }
                         db.SaveChanges();
-                        GetAlbumsAssignedToPhoto(id);
+                        GetAlbumsAssignedToPhoto(id, photoToUpdate.UserID);
                         return PartialView("_AlbumsAssignedToPhoto");
                     }
                 }
@@ -305,7 +326,7 @@ namespace PhotoManager.Controllers
         [HttpGet]
         public ActionResult UpdateAlbumsToPhoto(int? id)
         {
-            GetAlbumsAssignedToPhoto(id);
+          //  GetAlbumsAssignedToPhoto(id);
             return View();
         }
 
@@ -345,7 +366,7 @@ namespace PhotoManager.Controllers
 
                         }
                         db.SaveChanges();
-                        GetAlbumsAssignedToPhoto(id);
+                        GetAlbumsAssignedToPhoto(id, photoToUpdate.UserID);
                         return RedirectToAction("Edit", new { id });
                     }
                 }
@@ -360,11 +381,11 @@ namespace PhotoManager.Controllers
 
    
         //Get list of albums and check if album assigned to current photo
-        private void GetAlbumsAssignedToPhoto(int? id)
+        private void GetAlbumsAssignedToPhoto(int? id, string userId)
         {
             Photo photo = db.Photos.Find(id);
             var photoAlbums = photo.Albums.Select(a => a.ID);
-            var allAlbums = db.Albums;
+            var allAlbums = db.Albums.Where(a => a.UserID == userId);
             var albumsAssignedViewModel = new List<AlbumsAssignedToPhotoViewModel>();
             foreach (var album in allAlbums)
             {
@@ -440,12 +461,6 @@ namespace PhotoManager.Controllers
                          select m;
             return photos.ToList();
         }
-
-        //private List<Photo> GetPhotosByCameraFilter(int cameraFilter)
-        //{
-
-        //    return;
-        //}
 
         protected override void Dispose(bool disposing)
         {

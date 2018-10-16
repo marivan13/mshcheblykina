@@ -40,13 +40,6 @@ namespace PhotoManager.DataAccess
         public DbSet<Camera> Cameras { get; set; }
         public DbSet<Lens> Lenses { get; set; }
 
-        //public virtual DbSet<IdentityRole> Roles { get; set; }
-        //public virtual DbSet<ApplicationUser> Users { get; set; }
-        //public virtual DbSet<IdentityUserClaim> UserClaims { get; set; }
-        //public virtual DbSet<IdentityUserLogin> UserLogins { get; set; }
-        //public virtual DbSet<IdentityUserRole> UserRoles { get; set; }
-
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Album>()
@@ -258,7 +251,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Portrait1",
                         Description = "Portrait1 Description",
-                        UserID = regularUser.Id,
+                        UserID = paidUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
                         Photos = photos.GetRange(1,3)
@@ -267,7 +260,7 @@ namespace PhotoManager.DataAccess
                     {
                         Title = "Portrait2",
                         Description = "Portrait2 Description",
-                        UserID = regularUser.Id,
+                        UserID = paidUser.Id,
                         AlbumType = AlbumType.PublicAlbum,
                         AlbumCategory = AlbumCategory.Portrait,
                         Photos = photos.GetRange(2,2)
@@ -293,7 +286,16 @@ namespace PhotoManager.DataAccess
                 };
 
             albums.ForEach(a => context.Albums.AddOrUpdate(i => i.Title, a));
+
             context.SaveChanges();
+
+
+            context.Database.ExecuteSqlCommand(@"CREATE PROCEDURE [dbo].[SP_AdvancedTypePhotoSearch] 
+                                                    @Search [NVARCHAR](100)
+                                                    AS
+                                                    BEGIN
+                                                        SELECT * FROM dbo.Photos WHERE Keywords LIKE '%'+@Search+'%'
+                                                    END");
             base.Seed(context);
         }
 
