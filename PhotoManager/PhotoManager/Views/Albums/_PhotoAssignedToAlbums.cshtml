@@ -6,9 +6,11 @@
     List<PhotoAssignedAlbumsViewModel> photosNotAssigned = photosAssignedList.Where(p => !p.PhotoAssigned).ToList();
 }
 
-@using (Ajax.BeginForm("UpdatePhotosToAlbum", new AjaxOptions { UpdateTargetId = "photosList" }))
+@using (Ajax.BeginForm("ManagePhotosToAlbum", new AjaxOptions { UpdateTargetId = "photosList" }))
 {
     @Html.Hidden("id", ViewData["albumID"])
+    if (photosNotAssigned.Count != 0)
+    {
     <div class="row">
         <h4>Add photos to album</h4>
         @foreach (var photo in photosNotAssigned)
@@ -21,8 +23,10 @@
         }
     </div>
     <hr>
+    }
 
-
+    if (photosAssigned.Count != 0)
+    {
     <div class="row">
         <h4>Remove photos from album</h4>
         @foreach (var photo in photosAssigned)
@@ -34,24 +38,10 @@
             </div>
         }
     </div>
-    <hr />
+    }
 
+    <div>
     <input type="submit" value="Update photos" class="btn btn-primary" />
-    <br>
+    </div>
+    <hr>
 }
-
-
-@*@section Scripts {
-    <script type="text/javascript">
-        $(function () {
-            $(".thumbnail").click(function (e) {
-                    e.preventDefault();
-                console.log(e);
-                console.log("btn click");
-            });
-
-    });
-
-    </script>
-
-}*@

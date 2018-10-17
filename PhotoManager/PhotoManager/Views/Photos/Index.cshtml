@@ -12,14 +12,19 @@
         <div class="col-md-4">
             @Html.Partial("_AdvancedPhotoSearch")
         </div>
-
         <div class="col-md-4 pull-right">
-            @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary" })
+            @if (ViewBag.DisabledRegularUser)
+            {
+                @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary", @disabled = "disabled" })
+            }
+            else
+            {
+                @Html.ActionLink("Upload new photo", "Create", null, new { @class = "btn btn-primary"})
+            }
             @Html.ActionLink("Manage albums", "Index", "Albums", null, new { @class = "btn btn-primary" })
         </div>
     </div>
 </div>
-
 
 <hr />
 

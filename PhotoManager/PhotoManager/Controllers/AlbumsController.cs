@@ -15,24 +15,22 @@ using PhotoManager.ViewModel;
 
 namespace PhotoManager.Controllers
 {
-    public class AlbumsController : Controller
+    public class AlbumsController : AccountController
     {
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         private PhotoManagerDBContext db = new PhotoManagerDBContext();
        
         private readonly int allowAlbumsCountForRegularUser = 5;
-
-
+      
         // GET: Albums
         public ActionResult Index(AlbumCategory? albumCategory)
         {
-            ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             ViewBag.DisabledRegularUser = false;
 
             if (user != null)
             {
-               var userRole = userManager.GetRoles(user.Id).FirstOrDefault();
+               var userRole = UserManager.GetRoles(user.Id).FirstOrDefault();
                var albums = db.Albums.Where(a => a.UserID == user.Id).ToList();
 
                 if (userRole == "regular" && albums.Count() >= allowAlbumsCountForRegularUser)
@@ -92,8 +90,7 @@ namespace PhotoManager.Controllers
         {
             try
             {
-                ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                ApplicationUser user = userManager.FindByEmail(User.Identity.Name);
+                ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
 
                 if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title))
                 {
@@ -119,16 +116,22 @@ namespace PhotoManager.Controllers
         // GET: Albums/Edit/5
         public ActionResult Edit(int? albumId)
         {
+
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             if (albumId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!IsAlbumAssignedToCurrentUser(albumId, user.Id))
+            {
+                return RedirectToAction("Index", "Errors");
             }
             Album album = db.Albums.Find(albumId);
             if (album == null)
             {
                 return HttpNotFound();
             }
-            GetPhotosAssignedToAlbum(albumId, album.UserID);
+            //CheckAlbum(albumId);
             return View(album);
         }
 
@@ -137,11 +140,13 @@ namespace PhotoManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Title,AlbumType,Description")] Album album)
+        public ActionResult Edit(Album album)
         {
-            if (db.Albums.Select(a => a.Title).Contains(album.Title))
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
+            var editAlbum = db.Albums.Find(album.ID);
+            if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title) && editAlbum.Title != album.Title)
             {
-                ModelState.AddModelError("Title", album.Title + " already exists in your albums");
+                    ModelState.AddModelError("Title", album.Title + " already exists in your albums");
             }
             if (ModelState.IsValid)
             {
@@ -153,16 +158,21 @@ namespace PhotoManager.Controllers
         }
 
         // GET: Albums/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? albumId)
         {
-            if (id == null)
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
+            if (albumId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Album album = db.Albums.Find(id);
+            if (!IsAlbumAssignedToCurrentUser(albumId, user.Id))
+            {
+                return RedirectToAction("Index", "Errors");
+            }
+            Album album = db.Albums.Find(albumId);
             if (album == null)
             {
-                return HttpNotFound();
+                return View("Error");
             }
             return View(album);
         }
@@ -170,9 +180,9 @@ namespace PhotoManager.Controllers
         // POST: Albums/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int albumId)
         {
-            Album album = db.Albums.Find(id);
+            Album album = db.Albums.Find(albumId);
             db.Albums.Remove(album);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -195,7 +205,7 @@ namespace PhotoManager.Controllers
 
             db.SaveChanges();
 
-            return RedirectToAction("Edit", new { id = album.ID });
+            return RedirectToAction("Edit", new { albumId = album.ID });
         }
 
         public ActionResult PhotoAssignedAlbumsView()
@@ -210,16 +220,35 @@ namespace PhotoManager.Controllers
                          select m;
             if (!String.IsNullOrEmpty(searchString))
             {
-                albums = albums.Where(a => a.AlbumCategory.ToString().ToLower() == searchString);
+                albums = albums.Where(a => a.Title.ToLower() == searchString);
             }
             return PartialView("_AlbumsList", albums.ToList());
         }
 
-        
-        [HttpPost]
-        public ActionResult UpdatePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
+        [HttpGet]
+        public ActionResult ManagePhotosToAlbum(int? albumId)
         {
-            //var selectedAlbumsTemp = Request.Params["selectedAlbums"];
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
+            if (albumId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!IsAlbumAssignedToCurrentUser(albumId, user.Id))
+            {
+                return RedirectToAction("Index", "Errors");
+            }
+            Album album = db.Albums.Find(albumId);
+            if (album == null)
+            {
+                return HttpNotFound();
+            }
+            GetPhotosAssignedToAlbum(albumId, album.UserID);
+            return View(album);
+        }
+
+        [HttpPost]
+        public ActionResult ManagePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
+        {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -247,13 +276,14 @@ namespace PhotoManager.Controllers
                             foreach (var photo in selectedAssignedPhotos)
                             {
                                 var photoToAdd = db.Photos.Find(int.Parse(photo));
-                                albumToUpdate.Photos.Add(photoToAdd);
+                                albumToUpdate.Photos.Remove(photoToAdd);
                             }
 
                         }
                         db.SaveChanges();
                         GetPhotosAssignedToAlbum(id, albumToUpdate.UserID);
                         return PartialView("_PhotoAssignedToAlbums");
+                        
                     }
                 }
                 catch (Exception)
@@ -297,6 +327,17 @@ namespace PhotoManager.Controllers
             ViewBag.PhotosAssignedList = photosAssignedViewModel;
 
         }
+
+        private bool IsAlbumAssignedToCurrentUser(int? albumId, string userId)
+        {
+            return db.Albums.Any(a => a.UserID == userId && a.ID == albumId);
+        }
+
+        //method  to check for null and existing in all get method (edit, delete, update)
+        //private ActionResult CheckAlbum(int? albumId)
+        //{
+        //    
+        //}
 
     }
 }

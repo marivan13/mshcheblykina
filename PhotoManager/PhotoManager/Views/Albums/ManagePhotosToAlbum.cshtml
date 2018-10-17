@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Manage Photos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Photos</h2>
+
+<div class="container" id="photosList">
+       @Html.Partial("_PhotoAssignedToAlbums")
+</div>
+
+<div>
+    @Html.ActionLink("Back to My Albums", "Index")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryajax")
+    <script type="text/javascript">
+        $(function () {
+
+            $(".thumbnail").click(function (e) {
+                e.preventDefault();
+                var checkbox = $(this).children('input[type="checkbox"]');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            });
+        });
+
+    </script>
+}

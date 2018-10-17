@@ -12,8 +12,7 @@
     </div>
 
     <div class="col-md-6">
-        @*<a href="@Url.PublicAlbumUrl(Model.Title)" title="">Get album link</a>*@
-
+            @*<a href="@Url.PublicAlbumUrl(Model.Title)" title="">Get album link</a>*@
             @Html.ActionLink("Get album link", "ShowAlbum", "Albums", new { title = Model.Title }, new { @class = "btn btn-primary", target = "_blank" })
             @Html.ActionLink("Edit album", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
         
@@ -41,20 +40,6 @@
 
 <div class="">
     <dl class="dl-horizontal">
-        @*to do: add user name when not log in and for public page*@
-        @*@if (!Request.IsAuthenticated)
-            {
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.UserID)
-                </dt>
-
-                <dd>
-                    @Html.Display(" ")
-                </dd>
-
-            }*@
-
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>

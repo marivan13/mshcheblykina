@@ -160,11 +160,8 @@ namespace PhotoManager.Controllers
             catch (DataException)
             {
                 ModelState.AddModelError("", "Unable to upload photo");
-
             }
-
             return View(photoViewModel);
-
         }
 
         // GET: Photos/Edit/5
@@ -194,11 +191,10 @@ namespace PhotoManager.Controllers
                 Albums = photo.Albums,
                 CameraId = photo.CameraModel.CameraId,
                 ShutterSpeed = photo.ShutterSpeed
-                //AlbumsNotAssignedToPhoto = GetAlbumsNotAssignedToPhototest(photo.ID)
             };
 
             SetPhotoInfo(photoUpdateViewModel.ISO, photoUpdateViewModel.ShutterSpeed, photoUpdateViewModel.Diaphragm);
-            //GetAlbumsAssignedToPhoto(id);
+            //GetAlbumsAssignedToPhoto(id, photo.ID);
             return View(photoUpdateViewModel);
         }
 
@@ -217,7 +213,6 @@ namespace PhotoManager.Controllers
                 {
                     try
                     {
-
 
                         photoToUpdate.CameraModel = db.Cameras.Find(photoUpdateViewModel.CameraId);
                         photoToUpdate.LensModel = db.Lenses.Find(photoUpdateViewModel.LensId);

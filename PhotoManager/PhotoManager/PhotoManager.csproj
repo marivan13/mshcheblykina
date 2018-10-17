@@ -351,6 +351,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Photos\_AdvancedPhotoSearch.cshtml" />
     <Content Include="Views\Photos\_PhotosList.cshtml" />
+    <Content Include="Views\Albums\ManagePhotosToAlbum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

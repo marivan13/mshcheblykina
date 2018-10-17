@@ -27,8 +27,9 @@
                         @Html.DisplayFor(albumItem => album.Title)
                     </h5>
                     <div style="font-size:12px">
-                        @Html.ActionLink(" ", "Edit", new { id = album.ID }, new { @class = "glyphicon glyphicon-edit" })
-                        @Html.ActionLink(" ", "Delete", new { id = album.ID }, new { @class = "glyphicon glyphicon-remove" })
+                        @Html.ActionLink(" ", "Edit", new { albumId = album.ID }, new { @class = "glyphicon glyphicon-edit", @title = "Edit album" })
+                        @Html.ActionLink(" ", "Delete", new { albumId = album.ID }, new { @class = "glyphicon glyphicon-remove", @title = "Delete album" })
+                        @Html.ActionLink(" ", "ManagePhotosToAlbum", new { albumId = album.ID }, new { @class = "glyphicon glyphicon-th", @title = "Manage photos for album" })
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@ namespace PhotoManager.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("GenericError", new HandleErrorInfo(new HttpException(403, "Don't allow access the error pages"), "ErrorController", "Index"));
+            return RedirectToAction("GenericError", new HandleErrorInfo(new HttpException(403, "Don't allow access the error pages"), "ErrorsController", "Index"));
         }
 
         public ViewResult GenericError(HandleErrorInfo exception)

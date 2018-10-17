@@ -10,7 +10,7 @@
 <h3>Are you sure you want to delete this photo from album @Model.Title?</h3>
 <div>
     <h4></h4>
-  
+
     @using (Html.BeginForm("DeletePhotoFromAlbum", "Albums", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -19,8 +19,10 @@
         @Html.Hidden("albumId", Model.ID)
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Delete" class="btn btn-default" />
         </div>
     }
+    <div>
+        @Html.ActionLink("Back to My Albums", "Index")
+    </div>
 </div>
