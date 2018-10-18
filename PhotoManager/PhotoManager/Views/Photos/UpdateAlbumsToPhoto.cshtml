@@ -7,48 +7,64 @@
     List<AlbumsAssignedToPhotoViewModel> notAssignedAlbums = albumsToPhoto.Where(a => !a.AlbumAssigned).ToList();
 }
 
-<h2>Update albums for photo </h2>
-<hr/>
+<h2>Manage albums for photo </h2>
+<hr />
 
 @using (Html.BeginForm("UpdateAlbumsToPhoto", "Photos"))
 {
-<div class="row">
-    
-    @if (notAssignedAlbums.Count != 0)
-    {
-        <h3>Add photo to albums</h3>
-        foreach (var album in notAssignedAlbums)
-        {
-            <div class="col-md-6 list-group">
-                <div class="list-group-item list-group-item-info">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <input type="checkbox" name="selectedNotAssignedAlbums" value="@album.AlbumID"/>
-                    @*<img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto.PhotoUrl)" style="height:30px; width:auto">*@
-                    @album.AlbumTitle
-                </div>
-            </div>
-        }
-    }
-</div>
-    
+    <div class="row">
 
-<div class="row">
-    @if (assignedAlbums.Count != 0)
-    {
-        <h3>Remove photo from albums</h3>
-        foreach (var album in assignedAlbums)
+        @if (notAssignedAlbums.Count != 0)
         {
-            <div class="col-md-6 list-group">
-                <div class="list-group-item">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    <input type="checkbox" name="selectedAssignedAlbums" value="@album.AlbumID" />
-                    @*<img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto.PhotoUrl)" style="height:30px; width:auto">*@
-                    @album.AlbumTitle
+            <h3>Add photo to albums</h3>
+            foreach (var album in notAssignedAlbums)
+            {
+                <div class="col-md-3 col-lg-3 list-group">
+                    <div class="list-group-item list-group-item-info">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <input type="checkbox" name="selectedNotAssignedAlbums" value="@album.AlbumID" />
+                        @*<img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto.PhotoUrl)" style="height:30px; width:auto">*@
+                        @album.AlbumTitle
+                    </div>
                 </div>
-            </div>
+            }
         }
-    }
-</div>
+    </div>
+
+
+    <div class="row">
+        @if (assignedAlbums.Count != 0)
+        {
+            <h3>Remove photo from albums</h3>
+            foreach (var album in assignedAlbums)
+            {
+                <div class="col-md-3 col-lg-3 list-group">
+                    <div class="list-group-item">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <input type="checkbox" name="selectedAssignedAlbums" value="@album.AlbumID" />
+                        @*<img class="img-thumbnail" src="@Url.Content(album.AlbumPreviewPhoto.PhotoUrl)" style="height:30px; width:auto">*@
+                        @album.AlbumTitle
+                    </div>
+                </div>
+            }
+        }
+    </div>
 
     <input type="submit" value="Update Albums" class="btn btn-primary">
 }
+
+@section Scripts {
+    @*@Scripts.Render("~/bundles/jqueryajax")*@
+
+    <script type="text/javascript">
+        $(function () {
+            $(document).on('click', 'div .list-group-item', function (e) {
+                e.preventDefault();
+                var checkbox = $(this).children('input[type="checkbox"]');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            });
+        });
+
+    </script>
+}
+

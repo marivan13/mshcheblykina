@@ -17,9 +17,7 @@ namespace PhotoManager.DataAccess
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
             return userIdentity;
         }
     }
@@ -61,7 +59,7 @@ namespace PhotoManager.DataAccess
         public DbSet<LogEntry> LogEntry { get; set; }
     }
 
-    //public class PhotoManagerDbInitializer : DropCreateDatabaseAlways<PhotoManagerDBContext>
+    //public class PhotoManagerDbInitializer : DropCreateDatabaseIfModelChanges<PhotoManagerDBContext>
     public class PhotoManagerDbInitializer : DropCreateDatabaseAlways<PhotoManagerDBContext>
     {
         protected override void Seed(PhotoManagerDBContext context)
@@ -291,10 +289,16 @@ namespace PhotoManager.DataAccess
 
 
             context.Database.ExecuteSqlCommand(@"CREATE PROCEDURE [dbo].[SP_AdvancedTypePhotoSearch] 
-                                                    @Search [NVARCHAR](100)
+                                                    @Search [NVARCHAR](100),
+                                                    @UserId [NVARCHAR](MAX)
                                                     AS
                                                     BEGIN
-                                                        SELECT * FROM dbo.Photos WHERE Keywords LIKE '%'+@Search+'%'
+                                                        SELECT * FROM dbo.Photos 
+                                                        WHERE UserId = @UserId AND
+                                                        (Keywords LIKE '%'+@Search+'%' OR 
+                                                         ISO LIKE '%'+@Search+'%' OR
+                                                         ShutterSpeed LIKE '%'+@Search+'%' OR
+                                                         Diaphragm LIKE '%'+@Search+'%')
                                                     END");
             base.Seed(context);
         }

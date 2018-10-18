@@ -1,24 +1,18 @@
-﻿@*@model PhotoManager.Models.Photo*@
-
-@{ 
-    
-}
-    @using (Ajax.BeginForm("PhotoAdvancedSearch", new AjaxOptions { UpdateTargetId = "photoList" }))
-    {
+﻿
         <div class="container">
             <div class="row" id="search">
-                    <div class="form-group form-inline col-md-6">
-                        <input class="form-control" type="text" name="searchPhotos" id="searchPhotos" placeholder="Search" />
-                        <button type="submit" class="btn btn-primary">Search</button>
-                        <button type="button" id="advancedSearchBtn" class="btn btn-primary">Advanced Search</button>
-                    </div>
+                <div class="form-group form-inline col-md-6">
+                    <input class="form-control" type="text" name="searchField" id="searchField" placeholder="Search"  />
+                    <input type="button" id="searchBtn"class="btn btn-primary" value="Search"/>
+                    <button type="button" id="advancedSearchBtn" class="btn btn-primary">Advanced Search</button>
+                </div>
             </div>
             
             <div class="row" id="advancedSearch" style="display:none">
                 <form>
                     <div class="form-group col-sm-3 col-xs-6" id="cameraFilter">
                         <label for="contain">Camera</label>
-                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList,"All", new { @class = "btn btn-default dropdown form-control filter", @id = "camera" })
+                        @Html.DropDownList("CameraId", ViewBag.Cameras as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "camera" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6" id="lensFilter">
                         <label for="contain">Lens</label>
@@ -29,19 +23,22 @@
                         @Html.DropDownList("ISO", ViewBag.ISO as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "iso" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6">
-                            <label for="contain">Diaphragm</label>
-                            @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "diaphragm" })
+                        <label for="contain">Diaphragm</label>
+                        @Html.DropDownList("Diaphragm", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "diaphragm" })
                     </div>
                     <div class="form-group col-sm-3 col-xs-6">
-                            <label for="contain">Shutter Speed</label>
-                            @Html.DropDownList("ShutterSpeed", ViewBag.Diaphragm as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "shutterspeed" })
-                     </div>
+                        <label for="contain">Shutter Speed</label>
+                        @Html.DropDownList("ShutterSpeed", ViewBag.ShutterSpeed as SelectList, "All", new { @class = "btn btn-default dropdown form-control filter", @id = "shutterspeed" })
+                    </div>
 
                     <div class="form-group col-sm-3 col-xs-6">
                         <label for="contain">Keywords</label>
                         <input class="form-control" type="text" placeholder="Keywords" name="keywords" id="keywords" />
                     </div>
+                    <div class="form-group col-sm-3 col-xs-6">
+                        <button type="button" id="clearFilter" class="btn btn-default" style="margin-top:25px">Clear Filter</button>
+                    </div>
                 </form>
             </div>
         </div>
-    }
+    

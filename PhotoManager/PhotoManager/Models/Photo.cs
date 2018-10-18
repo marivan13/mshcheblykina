@@ -8,11 +8,6 @@ using System.ComponentModel;
 
 namespace PhotoManager.Models
 {  
-    
-    public class ShutterSpeed
-    {
-        public string ShutterSpeedItem { get; set; }
-    }
     public class Photo
     {   [Key]
         public int ID { get; set; }

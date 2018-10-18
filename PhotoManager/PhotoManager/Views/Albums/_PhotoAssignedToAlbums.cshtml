@@ -6,42 +6,49 @@
     List<PhotoAssignedAlbumsViewModel> photosNotAssigned = photosAssignedList.Where(p => !p.PhotoAssigned).ToList();
 }
 
-@using (Ajax.BeginForm("ManagePhotosToAlbum", new AjaxOptions { UpdateTargetId = "photosList" }))
+@*TODO: add custom html helper for image block*@
+
+@using (Ajax.BeginForm("UpdatePhotosToAlbum", new AjaxOptions { UpdateTargetId = "photosList" }))
 {
     @Html.Hidden("id", ViewData["albumID"])
     if (photosNotAssigned.Count != 0)
     {
-    <div class="row">
-        <h4>Add photos to album</h4>
-        @foreach (var photo in photosNotAssigned)
-        {
-            <div class="col-md-3 thumbnail" id="@photo.PhotoID">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <input type="checkbox" name="selectedNotAssignedPhotos" value="@photo.PhotoID" />
-                    <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:100px; width:auto">
-            </div>
-        }
-    </div>
-    <hr>
+        <div class="row">
+            <h4>Add photos to album</h4>
+            @foreach (var photo in photosNotAssigned)
+            {
+                <div class="col-md-3 col-lg-3 col-xs-6">
+                    <div class="thumbnail" id="@photo.PhotoID">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <input type="checkbox" name="selectedNotAssignedPhotos" value="@photo.PhotoID" />
+                        <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:180px; width:auto">
+                    </div>
+                </div>
+            }
+        </div>
+        <hr>
     }
 
     if (photosAssigned.Count != 0)
     {
-    <div class="row">
-        <h4>Remove photos from album</h4>
-        @foreach (var photo in photosAssigned)
-        {
-            <div class="col-md-3 thumbnail" id="@photo.PhotoID">
-                <span class="glyphicon glyphicon-remove"></span>
-                <input type="checkbox" name="selectedAssignedPhotos" value="@photo.PhotoID" />
-                <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:100px">
-            </div>
-        }
-    </div>
+        <div class="row">
+            <h4>Remove photos from album</h4>
+            @foreach (var photo in photosAssigned)
+            {
+                <div class="col-md-3 col-lg-3 col-xs-6">
+                    <div class="thumbnail" id="@photo.PhotoID">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <input type="checkbox" name="selectedAssignedPhotos" value="@photo.PhotoID" />
+                        <img class="img-responsive" src="@Url.Content(photo.PhotoUrl)" style="height:180px; width:auto">
+                    </div>
+                </div>
+            }
+        </div>
     }
 
     <div>
-    <input type="submit" value="Update photos" class="btn btn-primary" />
+        <input type="submit" value="Update photos" class="btn btn-primary" />
     </div>
     <hr>
 }
+

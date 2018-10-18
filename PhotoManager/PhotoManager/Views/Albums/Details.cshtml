@@ -14,7 +14,7 @@
     <div class="col-md-6">
             @*<a href="@Url.PublicAlbumUrl(Model.Title)" title="">Get album link</a>*@
             @Html.ActionLink("Get album link", "ShowAlbum", "Albums", new { title = Model.Title }, new { @class = "btn btn-primary", target = "_blank" })
-            @Html.ActionLink("Edit album", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Edit album", "Edit", new { albumId = Model.ID }, new { @class = "btn btn-primary" })
         
     </div>
 
@@ -80,13 +80,14 @@
 </div>
 <hr>
 
-    @Html.ActionLink("Back to Albums", "Index")
-
+    @Html.ActionLink("Back to My Albums", "Index")
 
 <!---modal dialog for view photos in carousel-->
 <div class="" id="photosModalShow">
     @Html.Partial("_AlbumPhotoCarousel")
 </div>
+
+
 @section scripts{
     <script type="text/javascript">
         $(function () {

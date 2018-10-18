@@ -1,13 +1,13 @@
-﻿
+﻿@model PhotoManager.Models.Album
 @{
     ViewBag.Title = "Manage Photos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Manage Photos</h2>
+<h2>Manage Photos for @Model.Title </h2>
 
 <div class="container" id="photosList">
-       @Html.Partial("_PhotoAssignedToAlbums")
+    @Html.Partial("_PhotoAssignedToAlbums")
 </div>
 
 <div>
@@ -16,12 +16,11 @@
 
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryajax")
+
     <script type="text/javascript">
         $(function () {
-
-            $(".thumbnail").click(function (e) {
+            $(document).on('click', '.thumbnail', function (e) {
                 e.preventDefault();
                 var checkbox = $(this).children('input[type="checkbox"]');
                 checkbox.prop('checked', !checkbox.prop('checked'));
@@ -30,3 +29,4 @@
 
     </script>
 }
+

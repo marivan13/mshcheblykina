@@ -16,7 +16,7 @@
             {
 
                 <div class="list-group-item form-control" id="@album.AlbumID">
-                    @Html.ActionLink(" ", "ShowAlbum", "Albums", new { albumTitle = @album.AlbumTitle }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
+                    @Html.ActionLink(" ", "ShowAlbum", "Albums", new { title = @album.AlbumTitle }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
                     @album.AlbumTitle
                 </div>
 
@@ -34,20 +34,19 @@
             @Html.Hidden("id", ViewData["PhotoID"])
             <div class="col-md-6 list-group form-group">
 
-
                 <h4>Add photo to albums</h4>
                 @foreach (var album in albumsNotAssigned)
                 {
                     <div class="list-group-item form-control" id="@album.AlbumID">
                         <span class="glyphicon glyphicon-plus"></span>
-                        <input type="checkbox" name="selectedAlbums" value="@album.AlbumID" @(Html.Raw(album.AlbumAssigned ? "checked=\"checked\"" : "")) />
+                        <input type="checkbox" name="selectedAlbums" value="@album.AlbumID" /> 
                         @album.AlbumTitle
                     </div>
                  }
             </div>
         </div>
         <input type="submit" id="updateAlbumsToPhoto" value="Update albums" class="btn btn-primary" />
-        }
+     }
  }
 
 

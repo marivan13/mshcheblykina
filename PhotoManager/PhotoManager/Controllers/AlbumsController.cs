@@ -22,9 +22,10 @@ namespace PhotoManager.Controllers
        
         private readonly int allowAlbumsCountForRegularUser = 5;
       
-        // GET: Albums
+        // GET: List of albums for current user, can select albums by album category, search by album title
         public ActionResult Index(AlbumCategory? albumCategory)
         {
+            _log.Info("Show albums list for current login user");
             ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             ViewBag.DisabledRegularUser = false;
 
@@ -47,9 +48,12 @@ namespace PhotoManager.Controllers
 
             return RedirectToAction("Index", "Home");  
         }
-        // GET: Albums/Details/5
+        
+        
+        // GET: Albums/Details/id Show photos for selected album
         public ActionResult Details(int? id)
         {
+            _log.Info("Show photos in album");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -66,6 +70,7 @@ namespace PhotoManager.Controllers
         [Route("Album/{title}")]
         public ActionResult ShowAlbum(string title)
         {
+            _log.Info("Show album with public link");
             Album album = db.Albums.Where(a => a.Title == title).FirstOrDefault();
             if (album == null)
             {
@@ -75,21 +80,20 @@ namespace PhotoManager.Controllers
             return View(album);
         }
 
-        // GET: Albums/Create
+        // GET: Albums/Create Create new album
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Albums/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Albums/Create Create new album
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Title,AlbumType,AlbumCategory,Description")] Album album)
         {
             try
             {
+                _log.Info("Create new album");
                 ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
 
                 if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title))
@@ -104,9 +108,11 @@ namespace PhotoManager.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
                 ModelState.AddModelError("", "Unable to add new album");
+                _log.Error(ex, "Unable to add new album");
             }
 
             return View(album);
@@ -116,7 +122,7 @@ namespace PhotoManager.Controllers
         // GET: Albums/Edit/5
         public ActionResult Edit(int? albumId)
         {
-
+            _log.Info("Update current album");
             ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             if (albumId == null)
             {
@@ -136,23 +142,28 @@ namespace PhotoManager.Controllers
         }
 
         // POST: Albums/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Album album)
         {
+            _log.Info("Update current album");
             ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
-            var editAlbum = db.Albums.Find(album.ID);
-            if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title) && editAlbum.Title != album.Title)
+            var albumToUpdate = db.Albums.Find(album.ID);
+            if (db.Albums.Any(a => a.UserID == user.Id && a.Title == album.Title) && albumToUpdate.Title != album.Title)
             {
                     ModelState.AddModelError("Title", album.Title + " already exists in your albums");
             }
-            if (ModelState.IsValid)
+            if (TryUpdateModel(albumToUpdate, new string[] { "Title", "AlbumType", "AlbumCategory", "Description" }))
             {
-                db.Entry(album).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch(Exception ex)
+                {
+                    _log.Error(ex);
+                }
             }
             return View(album);
         }
@@ -160,6 +171,7 @@ namespace PhotoManager.Controllers
         // GET: Albums/Delete/5
         public ActionResult Delete(int? albumId)
         {
+            _log.Info("Delete current album");
             ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             if (albumId == null)
             {
@@ -182,23 +194,29 @@ namespace PhotoManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int albumId)
         {
+            _log.Info("Delete current album");
             Album album = db.Albums.Find(albumId);
             db.Albums.Remove(album);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
+
+        //GET:
         [HttpGet]
         public ActionResult DeletePhotoFromAlbum(int? photoId, int? albumId)
         {
+            _log.Info("Delete photo from current album");
             Album album = db.Albums.Find(albumId);
             ViewData["photoId"] = photoId;
             return View(album);
         }
 
+        //POST:
         [HttpPost]
         public ActionResult DeletePhotoFromAlbum(int photoId, int? albumId)
         {
+            _log.Info("Delete photo from current album");
             Album album = db.Albums.Find(albumId);
             Photo photo = db.Photos.Find(photoId);
             album.Photos.Remove(photo);
@@ -208,16 +226,17 @@ namespace PhotoManager.Controllers
             return RedirectToAction("Edit", new { albumId = album.ID });
         }
 
-        public ActionResult PhotoAssignedAlbumsView()
-        {
-            return PartialView("_PhotoAssignedToAlbums");
-        }
+        //public ActionResult PhotoAssignedAlbumsView()
+        //{
+        //    return PartialView("_PhotoAssignedToAlbums");
+        //}
 
+        //search on page of albums for current user
         public ActionResult AlbumSearch(string searchString)
         {
-
-            var albums = from m in db.Albums
-                         select m;
+            _log.Info("Search album by title (ajax)");
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
+            var albums = db.Albums.Where(a => a.UserID == user.Id);
             if (!String.IsNullOrEmpty(searchString))
             {
                 albums = albums.Where(a => a.Title.ToLower() == searchString);
@@ -225,9 +244,11 @@ namespace PhotoManager.Controllers
             return PartialView("_AlbumsList", albums.ToList());
         }
 
+
         [HttpGet]
         public ActionResult ManagePhotosToAlbum(int? albumId)
         {
+            _log.Info("Manage photos for current album");
             ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             if (albumId == null)
             {
@@ -242,17 +263,20 @@ namespace PhotoManager.Controllers
             {
                 return HttpNotFound();
             }
-            GetPhotosAssignedToAlbum(albumId, album.UserID);
+            GetPhotosAssignedToAlbum(albumId, user.Id);
             return View(album);
         }
 
+        //POST: Update photos for current album
         [HttpPost]
-        public ActionResult ManagePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
+        public ActionResult UpdatePhotosToAlbum(int? id, string[] selectedAssignedPhotos, string[] selectedNotAssignedPhotos)
         {
+            _log.Info("Update photos for current album (ajax)");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
             var albumToUpdate = db.Albums.Find(id);
             if (TryUpdateModel(albumToUpdate))
             {
@@ -286,14 +310,13 @@ namespace PhotoManager.Controllers
                         
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Unable to save");
+                    _log.Error(ex, "Unable to update photos");
+                    ModelState.AddModelError("", "Unable to update photos");
                 }
             }
-
             return View(albumToUpdate);
-
         }
 
 
@@ -306,8 +329,10 @@ namespace PhotoManager.Controllers
             base.Dispose(disposing);
         }
 
+
         private void GetPhotosAssignedToAlbum(int? albumId, string userId)
         {
+            _log.Info("Get list of photos for current album and for current user");
             Album album = db.Albums.Find(albumId);
             var albumsPhoto = album.Photos.Select(a => a.ID);
             var allPhotos = db.Photos.Where(p => p.UserID == userId);
@@ -325,15 +350,16 @@ namespace PhotoManager.Controllers
             }
 
             ViewBag.PhotosAssignedList = photosAssignedViewModel;
-
         }
 
+        
         private bool IsAlbumAssignedToCurrentUser(int? albumId, string userId)
         {
+            _log.Info("Check current album for current user");
             return db.Albums.Any(a => a.UserID == userId && a.ID == albumId);
         }
 
-        //method  to check for null and existing in all get method (edit, delete, update)
+        //check for null and existing in all get method (edit, delete, update)
         //private ActionResult CheckAlbum(int? albumId)
         //{
         //    

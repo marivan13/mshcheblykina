@@ -4,7 +4,6 @@
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["PhotoID"] = Model.PhotoId;
-    //ViewData["PhotoUrl"] = @Url.Content(Model.PhotoUrl);
     ViewData["PhotoName"] = Model.PhotoName;
 }
 
@@ -14,7 +13,7 @@
              <h2> Edit photo  @Html.DisplayFor(model => model.PhotoName)</h2>
         </div>
         <div>
-             @Html.ActionLink("Manage albums for photo", "UpdateAlbumsToPhoto", "Photos", new {id = Model.PhotoId}, new { @class = "btn btn-primary" })
+             @Html.ActionLink("Manage albums", "UpdateAlbumsToPhoto", "Photos", new {id = Model.PhotoId}, new { @class = "btn btn-primary" })
         </div>
     </div>
         <hr>
@@ -110,7 +109,7 @@
                 {
 
                     <div class="list-group-item form-control" id="@album.ID">
-                        @Html.ActionLink(" ", "ShowAlbum", "Albums", new { albumTitle = @album.Title }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
+                        @Html.ActionLink(" ", "ShowAlbum", "Albums", new { title = @album.Title }, new { @class = "glyphicon glyphicon-th-large", target = "_blank" })
                         @album.Title
                     </div>
 
@@ -121,45 +120,9 @@
 
     <hr>
     <div>
-        @Html.ActionLink("Back to List", "Index")
+        @Html.ActionLink("Back to My Photos", "Index")
     </div>
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
-
-        <script type="text/javascript">
-        $(function () {
-            @*var photoId = @Model.PhotoId;
-            var selectedAlbumsTemp = new Array();
-            $("div .list-group-item").click(function () {
-                $(this).toggleClass("list-group-item-info");
-                selectedAlbumsTemp.push(this.id);
-                console.log(selectedAlbumsTemp);*@
-
-            //  //  $("#selectedAlbums").val(selectedAlbums);
-            //  //  alert($("#selectedAlbums").val());
-            });
-
-
-
-            //$("#updateAlbumsToPhoto").click(function (e) {
-            //    e.preventDefault();
-
-            //    console.log("btn click");
-            //    $.post('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp }, function (data) {
-            //        $("#albumsList").html(data);
-            //    });
-             //   $("#testdiv").load('/Photos/AddPhotoToAlbum', { id: photoId, selectedAlbums: selectedAlbumsTemp });
-
-             //     //  $("#testdiv").empty();
-             //     //  $("#testdiv").html(data);
-             ////   });
-             //      // alert(data);
-
-        //    });
-
-
-        //});
-
-        </script>
     }

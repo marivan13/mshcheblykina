@@ -1,108 +1,60 @@
 ﻿@model IEnumerable<PhotoManager.Models.Photo>
-    @using PhotoManager.Helpers.Html
+@using PhotoManager.Helpers.Html
 
-
-
-<div class="row">
-    @foreach (var item in Model)
+@if (Model.Count() != 0)
+{
+<div class="jumbotron">
+    <div class="row">
+        @foreach (var item in Model)
         {
             var imageLink = (@Url.Action("Details", "Photos", new { photoId = item.ID })).ToString();
             var imageUrl = (@Url.Content(item.PhotoUrl)).ToString();
             var imageStyle = "height:200px";
 
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
-        <div class="thumbnail">
-            @Html.ImageWithLink(imageLink, imageUrl, imageStyle)
-            <div style="font-size:12px">
-                <dl class="dl-horizontal">
-                    <dt>
-                        @Html.Label("EXIF")
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
-                        @Html.DisplayFor(modelItem => item.LensModel.LensModel)
-                        @Html.DisplayFor(modelItem => item.Diaphragm)
-                        @Html.DisplayFor(modelItem => item.ShutterSpeed)
-                        @Html.DisplayFor(modelItem => item.ISO)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.CreatedDate)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(modelItem => item.CreatedDate)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Location)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(modelItem => item.Location)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Keywords)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(modelItem => item.Keywords)
-                    </dd>
-                </dl>
-                <div>
-                    @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
-                    @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
-                    <i class='glyphicon glyphicon-plus'></i>
-                    @Html.ActionLink("Add to Album", "Details", new { photoId = item.ID }, new { @class = "btn btn-sm btn-default" })
-                </div>
-            </div>
-        </div>
-    </div>
-    }
-</div>
-
-@*<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
-            <div class="thumbnail">
-                <a href="@Url.Action("Details", "Photos", new {id = item.ID})">
-                    <img class="img-responsive" src="@Url.Content(item.PhotoUrl)" style="height:200px">
-                </a>
-                <div style="font-size:12px">
-                    <dl class="dl-horizontal">
-                        <dt>
-                            @Html.Label("EXIF")
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
-                            @Html.DisplayFor(modelItem => item.LensModel.LensModel)
-                            @Html.DisplayFor(modelItem => item.Diaphragm)
-                            @Html.DisplayFor(modelItem => item.ShutterSpeed)
-                            @Html.DisplayFor(modelItem => item.ISO)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.CreatedDate)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(modelItem => item.CreatedDate)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.Location)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(modelItem => item.Location)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.Keywords)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(modelItem => item.Keywords)
-                        </dd>
-                    </dl>
-                    <div>
-                        @Html.ActionLink(" ", "Edit", new { id = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
-                        @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
-                        <i class='glyphicon glyphicon-plus'></i>
-                        @Html.ActionLink("Add to Album", "Details", new { id = item.ID }, new { @class = "btn btn-sm btn-default" })
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
+                <div class="thumbnail">
+                    @Html.ImageWithLink(imageLink, imageUrl, imageStyle)
+                    <div style="font-size:12px">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.Label("EXIF")
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.CameraModel.CameraModel)
+                                @Html.DisplayFor(modelItem => item.LensModel.LensModel)
+                                @Html.DisplayFor(modelItem => item.Diaphragm)
+                                @Html.DisplayFor(modelItem => item.ShutterSpeed)
+                                @Html.DisplayFor(modelItem => item.ISO)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.CreatedDate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Location)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.Location)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Keywords)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.Keywords)
+                            </dd>
+                        </dl>
+                        <div>
+                            @Html.ActionLink(" ", "Edit", new { photoId = item.ID }, new { @class = "glyphicon glyphicon-edit" }) |
+                            @Html.ActionLink(" ", "Delete", new { photoId = item.ID }, new { @class = "glyphicon glyphicon-remove" }) |
+                            <i class='glyphicon glyphicon-plus'></i>
+                            @Html.ActionLink("Add to Album", "Details", new { photoId = item.ID }, new { @class = "btn btn-sm btn-default" })
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>*@
+        }
+    </div>
+</div>
+}
